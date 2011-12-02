@@ -1,4 +1,4 @@
-// Simple tests for experiments and checking if tests in JavaScript work
+// Simple tests, checking if mocha, should.js and tests in JavaScript work
 
 describe('Simple JavaScript test', function() {
   it('passes correct examples', function() {

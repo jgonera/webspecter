@@ -1,57 +1,51 @@
 var nodify = 'nodify/nodify.js';
 phantom.injectJs(nodify);
 
-var assert, should, feature, browser, query;
+var assert, should, feature, browser, $;
 
 nodify.run(function() {
   assert = require('assert');
-  should = require('./should');
+  should = require('./should');  
 
   var mocha = require('./mocha');
-  var suite = new mocha.Suite('');
   var Reporter = require('./mocha/lib/reporters/spec');
-
-  var utils = require('./utils');
-  var Browser = require('./Browser');
+  
+  var rootSuite = new mocha.Suite('');
+  var ui = mocha.interfaces['bdd'];
+  if (!ui) throw new Error('invalid mocha interface "' + ui + '"');
+  ui(rootSuite);
+  rootSuite.emit('pre-require', global);
+  
   require('./patches');
+  var utils = require('./utils');
+  var FeatureManager = require('./feature').FeatureManager;
+  var Feature = require('./feature').Feature;  
+  
+  var featureManager = new FeatureManager(rootSuite, ui);
+  feature = function(title, url, fn) {
+    var suite = mocha.Suite.create(rootSuite, title);
+    ui(suite);
+    featureManager.addFeature(new Feature(suite, url, fn));
+  };
+
 
   var path = phantom.args[0] || './test';
   if (path[0] !== '/' && path[0] !== '.') path = './' + path;
 
   var files = utils.getFiles(path);
-
-
-  feature = function(name, url, fn) {
-    var browser = new Browser;
-    browser.get(url);
-    describe(name, function() {
-      before(function(done) {
-        global.browser = browser;
-        global.query = browser.query.bind(browser);
-        browser.onLoad(done);
-      });
-      
-      fn();
-    });
-  };
-  
-  
-  var ui = mocha.interfaces['bdd'];
-  if (!ui) throw new Error('invalid mocha interface "' + ui + '"');
-  ui(suite);
-  suite.emit('pre-require', global);
-  
+    
   for (var i=0; i<files.length; ++i) {
-    suite.emit('pre-require', global, files[i]);
-    suite.emit('require', require(files[i]), files[i]);
-    suite.emit('post-require', global, files[i]);
-    //require(files[i]);
+    require(files[i]);
   }
+  
+  featureManager.loadFeatures();
 
-  suite.emit('run');
-  var runner = new mocha.Runner(suite);
-  runner.on('test', function(newTest) {
-    newTest.fn._isTest = true;
+  rootSuite.emit('run');
+  var runner = new mocha.Runner(rootSuite);
+  
+  // a hack to show the test body as a stack trace on errors
+  runner.on('test', function(test) {
+    test.fn._isTest = true;
   });
 
   var reporter = new Reporter(runner);

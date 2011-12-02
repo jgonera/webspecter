@@ -1,0 +1,50 @@
+<p id="info">no event fired</p>
+
+<div id="mouse">
+  <p id="mousedown">mousedown</p>
+  <p id="mouseup">mouseup</p>
+  <p id="click">click</p>
+</div>
+
+<p id="setCookie">set cookie</p>
+<p id="getCookie">get cookie</p>
+
+<script>
+  //throw new Error('yeah');
+
+  function createCookie(name,value,days) {
+	  if (days) {
+		  var date = new Date();
+		  date.setTime(date.getTime()+(days*24*60*60*1000));
+		  var expires = "; expires="+date.toGMTString();
+	  }
+	  else var expires = "";
+	  document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  function readCookie(name) {
+	  var nameEQ = name + "=";
+	  var ca = document.cookie.split(';');
+	  for(var i=0;i < ca.length;i++) {
+		  var c = ca[i];
+		  while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		  if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	  }
+	  return null;
+  }
+
+  function eraseCookie(name) {
+	  createCookie(name,"",-1);
+  }
+
+  var logEvent = function(e) {
+    $('#info').text(e.type + ' fired');
+  };
+  
+  $('#mousedown').mousedown(logEvent);
+  $('#mouseup').mouseup(logEvent);
+  $('#click').click(logEvent);
+  
+  $('#setCookie').click(function() { createCookie('foo', 'bar'); });
+  $('#getCookie').click(function() { $('#info').text(readCookie('foo')); });
+</script>

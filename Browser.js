@@ -1,13 +1,28 @@
 var EventEmitter = require('events').EventEmitter;
 var PageQuery = require('./PageQuery');
+var util = require('util');
+
+var PageError = function(message, line, fileName) {
+  this.name = 'PageError';
+  this.message = message;
+  this.line = line;
+  this.fileName = fileName;
+};
+util.inherits(PageError, Error);
 
 var Browser = module.exports = function Browser() {
   var self = this;
   this.page = require('webpage').create();
   this.loaded = false;
   
-  this.page.onConsoleMessage = function(msg) {
-    console.log(msg);
+//  this.page.viewportSize = { width: 1024, height: 768 }
+  
+  this.page.onConsoleMessage = function(msg, line, fileName) {
+//    if (msg.indexOf('Error') !== -1) {
+//      throw new PageError(msg, line, fileName);
+//    } else {
+      console.log('%s:%d %s', fileName, line, msg);
+//    }
   };
 
   this.page.onLoadStarted = function() {
@@ -27,20 +42,15 @@ var Browser = module.exports = function Browser() {
 
 Browser.prototype = new EventEmitter;
 
-Browser.prototype.pageLoaded = function() {
-  return this.loaded;
-};
-
-Browser.prototype.get = function(url, callback) {
-  this.url = url;
-  this.page.open(encodeURI(url), callback);
+Browser.prototype.get = function(url) {
+  this.page.open(encodeURI(url));
 };
 
 Browser.prototype.query = function(query) {
   return new PageQuery(this, query);
 };
 
-Browser.prototype.onLoad = function(callback) {
+Browser.prototype.onLoaded = function(callback) {
   if (this.loaded) {
     callback(this.error);
   } else {
