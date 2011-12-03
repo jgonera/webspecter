@@ -1,4 +1,4 @@
-feature 'PageQuery', 'http://localhost:4567', ->
+feature 'PageQuery', url: 'http://localhost:4567', ->
   describe '#text', ->
     it "returns element's text content", ->
       $('title').text.should.equal 'WebSpecter Test Server'
@@ -27,7 +27,7 @@ feature 'PageQuery', 'http://localhost:4567', ->
       $('#info').text.should.equal 'bar'
       #console.log $('#info').text
 
-feature 'Cookie', 'http://localhost:4567', ->
+feature 'Cookie', url: 'http://localhost:4567', ->
   it "no cookie", ->
     $('#getCookie').click()
     $('#info').text.should.not.equal 'bar'

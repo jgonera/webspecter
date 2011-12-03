@@ -22,10 +22,10 @@ nodify.run(function() {
   var Feature = require('./feature').Feature;  
   
   var featureManager = new FeatureManager(rootSuite, ui);
-  feature = function(title, url, fn) {
+  feature = function(title, options, fn) {
     var suite = mocha.Suite.create(rootSuite, title);
     ui(suite);
-    featureManager.addFeature(new Feature(suite, url, fn));
+    featureManager.addFeature(new Feature(suite, options, fn));
   };
 
 
@@ -35,7 +35,9 @@ nodify.run(function() {
   var files = utils.getFiles(path);
     
   for (var i=0; i<files.length; ++i) {
+    rootSuite.emit('pre-require', global);
     require(files[i]);
+    rootSuite.emit('post-require', global);
   }
   
   featureManager.loadFeatures();

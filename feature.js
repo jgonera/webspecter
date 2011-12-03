@@ -7,32 +7,46 @@ var FeatureManager = exports.FeatureManager = function FeatureManager() {
 };
 
 FeatureManager.prototype.addFeature = function(feature) {
+  // add page to the chain-loading
   var lastFeature = this.features.slice(-1)[0];
   if (lastFeature) {
     lastFeature.on('pageLoaded', feature.loadPage.bind(feature));
   }
+  // add feature
   this.features.push(feature);
 };
 
 FeatureManager.prototype.loadFeatures = function() {
-  this.features[0].loadPage();
+  // start chain-loading pages
+  if (this.features.length) this.features[0].loadPage();
+  
+  // load all the features
+  this.features.forEach(function(feature) {
+    feature.load();
+  });
 };
 
-var Feature = exports.Feature = function Feature(suite, url, fn) {
-  this.url = url;
-  var browser = this.browser = new Browser;
-  suite.emit('pre-require', global);
-  suite.beforeAll(function(done) {
+var Feature = exports.Feature = function Feature(suite, options, fn) {
+  this.suite = suite;
+  this.url = options.url;
+  this.fn = fn;
+  this.browser = new Browser;
+};
+
+Feature.prototype = new EventEmitter;
+
+Feature.prototype.load = function() {
+  var browser = this.browser;
+  this.suite.emit('pre-require', global);
+  this.suite.beforeAll(function(done) {
     global.browser = browser;
     global.$ = browser.query.bind(browser);
     browser.onLoaded(done);
   });
-    
-  fn();
-  suite.emit('post-require', global);
+  
+  this.fn();
+  this.suite.emit('post-require', global);  
 };
-
-Feature.prototype = new EventEmitter;
 
 Feature.prototype.loadPage = function() {
   this.browser.get(this.url);

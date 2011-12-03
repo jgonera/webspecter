@@ -43,6 +43,7 @@ var Browser = module.exports = function Browser() {
 Browser.prototype = new EventEmitter;
 
 Browser.prototype.get = function(url) {
+  this.url = url;
   this.page.open(encodeURI(url));
 };
 
