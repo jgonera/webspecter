@@ -21,9 +21,9 @@ nodify.run(function() {
   var FeatureManager = require('./feature').FeatureManager;
   var Feature = require('./feature').Feature;  
   
-  var featureManager = new FeatureManager(rootSuite, ui);
+  var featureManager = new FeatureManager(rootSuite);
   feature = function(title, options, fn) {
-    var suite = mocha.Suite.create(rootSuite, title);
+    var suite = new mocha.Suite(title);
     ui(suite);
     featureManager.addFeature(new Feature(suite, options, fn));
   };

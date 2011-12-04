@@ -1,7 +1,8 @@
 var EventEmitter = require('events').EventEmitter;
 var Browser = require('./Browser');
 
-var FeatureManager = exports.FeatureManager = function FeatureManager() {
+var FeatureManager = exports.FeatureManager = function FeatureManager(rootSuite) {
+  this.rootSuite = rootSuite;
   this.features = {};
   this.length = 0;
   this.loaded = [];
@@ -41,8 +42,8 @@ FeatureManager.prototype.loadFeatures = function() {
         } else {
           feature.loadPage();
         }
-        feature.load();
-        this.loaded.push(title);
+        feature.load(this.rootSuite);
+        this.loaded.unshift(title);
         prevFeature = feature;
       }
     };
@@ -64,7 +65,8 @@ var Feature = exports.Feature = function Feature(suite, options, fn) {
 
 Feature.prototype = new EventEmitter;
 
-Feature.prototype.load = function() {
+Feature.prototype.load = function(rootSuite) {
+  rootSuite.addSuite(this.suite);
   var browser = this.browser;
   this.suite.emit('pre-require', global);
   this.suite.beforeAll(function(done) {

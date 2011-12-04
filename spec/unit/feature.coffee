@@ -1,68 +1,81 @@
 {EventEmitter} = require('events')
-{Feature, FeatureManager} = require('../feature')
-Browser = require('../Browser')
+{Feature, FeatureManager} = require('../../feature')
+Browser = require('../../Browser')
 
 class DummySuite extends EventEmitter
   constructor: ->
-    @done = false
+    @addSuiteCalls = []
     
   beforeAll: (fn) ->
-    fn => @done = true
+    fn => @emit 'beforeAll done'
+  
+  addSuite: (suite) ->
+    @addSuiteCalls.push suite
+    @emit 'addSuite'
 
 class DummyFeature extends EventEmitter
   constructor: (options = {}) ->
     @delay = options.delay or 0
     @dependencies = options.dependencies or []
     @title = options.title or 'f' + Math.random()
-    @loadCalls = 0
-    @loadPageCalls = 0
+    @loadCalls = []
+    @loadPageCalls = []
   
-  load: ->
-    @loadCalls += 1
-    @emit 'loaded'
+  load: (rootSuite) ->
+    @loadCalls.push rootSuite
+    @emit 'load'
   
   loadPage: ->
-    @loadPageCalls += 1
+    @loadPageCalls.push null
     setTimeout (=> @emit 'pageLoaded'), @delay
     
 
 describe 'Feature', ->
+  rootSuite = null
   suite = null
   feature = null
   fnRun = false
   
   beforeEach ->
+    rootSuite = new DummySuite
     suite = new DummySuite
-    feature = new Feature suite, url: 'http://localhost:4567', -> fnRun = true
+    feature = new Feature(suite, url: 'http://localhost:4567', -> fnRun = true)
   
   describe '#load', ->
+    it "addes the features suite to the rootSuite", ->
+      feature.load(rootSuite)
+      rootSuite.addSuiteCalls.length.should.equal 1
+      rootSuite.addSuiteCalls[0].should.equal suite
+    
     it "makes the suite emit pre-require", ->
       emitted = false
       suite.on 'pre-require', -> emitted = true
-      feature.load()
+      feature.load(rootSuite)
       emitted.should.equal true
     
     it "adds a beforeAll block", (done) ->
+      doneCalled = false
+      suite.on 'beforeAll done', -> doneCalled = true
       feature.loadPage()
-      feature.load()
+      feature.load(rootSuite)
       global.browser.should.be.an.instanceOf Browser
       global.$.should.be.an.instanceOf Function
       setTimeout (->
         try
-          suite.done.should.equal true
+          doneCalled.should.equal true
           done()
         catch e
           done(e)
       ), 50
       
     it "runs the feature description function", ->
-      feature.load()
+      feature.load(rootSuite)
       fnRun.should.be.ok
     
     it "makes the suite emit post-require", ->
       emitted = false
       suite.on 'post-require', -> emitted = true
-      feature.load()
+      feature.load(rootSuite)
       emitted.should.equal true
   
   describe '#loadPage', ->
@@ -84,8 +97,12 @@ describe 'Feature', ->
       
 
 describe 'FeatureManager', ->
-  featureManager = null  
-  beforeEach -> featureManager = new FeatureManager
+  rootSuite = null
+  featureManager = null
+  
+  beforeEach ->
+    rootSuite = new DummySuite
+    featureManager = new FeatureManager(rootSuite)
   
   describe '#addFeature', ->
     it 'adds a feature to the FeatureManager', ->
@@ -105,32 +122,17 @@ describe 'FeatureManager', ->
         error.should.equal true
   
   describe '#loadFeatures', ->
-    it 'calls #loadPage for all the features', (done) ->
-      feature1 = new DummyFeature
-      feature2 = new DummyFeature
-      featureManager.addFeature feature1
-      featureManager.addFeature feature2
-      featureManager.loadFeatures()
-      setTimeout (->
-        try
-          feature1.loadPageCalls.should.equal 1
-          feature2.loadPageCalls.should.equal 1
-          done()
-        catch e
-          done(e)
-      ), 10
-    
-    it 'chains #loadPage of the next feature when the previous finishes', (done) ->
+    it 'chains #loadPage of all the features', (done) ->
       feature1 = new DummyFeature(title: 'f1', delay: 50)
       feature2 = new DummyFeature(dependencies: ['f1'])
       featureManager.addFeature feature1
       featureManager.addFeature feature2
       featureManager.loadFeatures()
-      feature1.loadPageCalls.should.equal 1
-      feature2.loadPageCalls.should.equal 0
+      feature1.loadPageCalls.length.should.equal 1
+      feature2.loadPageCalls.length.should.equal 0
       setTimeout (->
         try
-          feature2.loadPageCalls.should.equal 1
+          feature2.loadPageCalls.length.should.equal 1
           done()
         catch e
           done(e)
@@ -145,8 +147,10 @@ describe 'FeatureManager', ->
       featureManager.addFeature feature1
       featureManager.addFeature feature2
       featureManager.loadFeatures()
-      feature1.loadCalls.should.equal 1
-      feature2.loadCalls.should.equal 1
+      feature1.loadCalls.length.should.equal 1
+      feature1.loadCalls[0].should.equal rootSuite
+      feature2.loadCalls.length.should.equal 1
+      feature2.loadCalls[0].should.equal rootSuite
     
     it "loads the features in order taking into account their dependencies", ->
       featureOrder = []
@@ -158,7 +162,7 @@ describe 'FeatureManager', ->
       ]
       for feature in features
         do (feature) ->
-          feature.on 'loaded', -> featureOrder.push feature.title
+          feature.on 'load', -> featureOrder.push feature.title
           featureManager.addFeature feature
       featureManager.loadFeatures()
       featureOrder.should.eql ['f3', 'f4', 'f2', 'f1']

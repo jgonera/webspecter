@@ -1,5 +1,5 @@
-Browser = require '../Browser'
-PageQuery = require '../PageQuery'
+Browser = require '../../Browser'
+PageQuery = require '../../PageQuery'
 
 
 describe 'Browser', ->
