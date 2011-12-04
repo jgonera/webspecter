@@ -10,10 +10,10 @@ describe 'Browser', ->
   
   describe '#query', ->
     it 'returns a PageQuery object', ->
-      (browser.query('fake') instanceof PageQuery).should.be.ok
+      browser.query('fake').should.be.an.instanceOf PageQuery
   
   describe '#onLoaded', ->  
-    it 'runs the callback if the page after the page is loaded', (done) ->
+    it 'runs the callback after the page is loaded', (done) ->
       calls = 0
       browser.onLoaded -> calls += 1
       browser.get 'http://localhost:4567'

@@ -28,7 +28,6 @@ nodify.run(function() {
     featureManager.addFeature(new Feature(suite, options, fn));
   };
 
-
   var path = phantom.args[0] || './test';
   if (path[0] !== '/' && path[0] !== '.') path = './' + path;
 

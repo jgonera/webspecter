@@ -2,33 +2,62 @@ var EventEmitter = require('events').EventEmitter;
 var Browser = require('./Browser');
 
 var FeatureManager = exports.FeatureManager = function FeatureManager() {
-  this.features = [];
-  this.ready = true;
+  this.features = {};
+  this.length = 0;
+  this.loaded = [];
 };
 
 FeatureManager.prototype.addFeature = function(feature) {
-  // add page to the chain-loading
-  var lastFeature = this.features.slice(-1)[0];
-  if (lastFeature) {
-    lastFeature.on('pageLoaded', feature.loadPage.bind(feature));
+  if (feature.title in this.features) {
+    throw Error("There is more than one feature named " + feature.title);
   }
-  // add feature
-  this.features.push(feature);
+  
+  this.features[feature.title] = feature;
+  this.length += 1;
+};
+
+FeatureManager.prototype._canLoad = function(feature) {
+  for (var i in feature.dependencies) {
+    if (this.loaded.indexOf(feature.dependencies[i]) === -1) {
+      return false;
+    }
+  }
+  return true;
 };
 
 FeatureManager.prototype.loadFeatures = function() {
-  // start chain-loading pages
-  if (this.features.length) this.features[0].loadPage();
+  var i, title, feature, prevFeature, prevLoadedLength;
   
   // load all the features
-  this.features.forEach(function(feature) {
-    feature.load();
-  });
+  while (this.loaded.length < this.length) {
+    prevLoadedLength = this.loaded.length;
+    for (title in this.features) {
+      var feature = this.features[title];
+      
+      if (this._canLoad(feature) && this.loaded.indexOf(title) === -1) {
+        if (prevFeature) {
+          // add page to the chain-loading
+          prevFeature.on('pageLoaded', feature.loadPage.bind(feature));
+        } else {
+          feature.loadPage();
+        }
+        feature.load();
+        this.loaded.push(title);
+        prevFeature = feature;
+      }
+    };
+    
+    if (this.loaded.length === prevLoadedLength) {
+      throw Error("Can't load features because of circular dependencies!");
+    }
+  }
 };
 
 var Feature = exports.Feature = function Feature(suite, options, fn) {
   this.suite = suite;
+  this.title = suite.title;
   this.url = options.url;
+  this.dependencies = options.dependsOn;
   this.fn = fn;
   this.browser = new Browser;
 };
