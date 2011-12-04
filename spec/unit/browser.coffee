@@ -14,25 +14,12 @@ describe 'Browser', ->
   
   describe '#onLoaded', ->  
     it 'runs the callback after the page is loaded', (done) ->
-      calls = 0
-      browser.onLoaded -> calls += 1
+      browser.onLoaded done
       browser.get 'http://localhost:4567'
-      setTimeout (->
-        try
-          calls.should.be.equal 1
-          done()
-        catch e
-          done(e)
-      ), 100
     
     it 'runs the callback if the page is already loaded', (done) ->
       calls = 0
       browser.get 'http://localhost:4567'
       setTimeout (->
-        browser.onLoaded -> calls += 1
-        try
-          calls.should.be.equal 1
-          done()
-        catch e
-          done(e)
-      ), 100
+        browser.onLoaded done
+      ), 500

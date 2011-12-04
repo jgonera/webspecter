@@ -37,6 +37,7 @@ describe 'Feature', ->
   fnRun = false
   
   beforeEach ->
+    fnRun = false
     rootSuite = new DummySuite
     suite = new DummySuite
     feature = new Feature(suite, url: 'http://localhost:4567', -> fnRun = true)
@@ -54,19 +55,11 @@ describe 'Feature', ->
       emitted.should.equal true
     
     it "adds a beforeAll block", (done) ->
-      doneCalled = false
-      suite.on 'beforeAll done', -> doneCalled = true
+      suite.on 'beforeAll done', done
       feature.loadPage()
       feature.load(rootSuite)
       global.browser.should.be.an.instanceOf Browser
       global.$.should.be.an.instanceOf Function
-      setTimeout (->
-        try
-          doneCalled.should.equal true
-          done()
-        catch e
-          done(e)
-      ), 50
       
     it "runs the feature description function", ->
       feature.load(rootSuite)
@@ -84,16 +77,8 @@ describe 'Feature', ->
       feature.browser.url.should.equal 'http://localhost:4567'
     
     it 'emits pageLoaded', (done) ->
-      emitted = false
-      feature.on 'pageLoaded', -> emitted = true
+      feature.on 'pageLoaded', done
       feature.loadPage()
-      setTimeout (->
-        try
-          emitted.should.be.ok
-          done()
-        catch e
-          done(e)
-      ), 50
       
 
 describe 'FeatureManager', ->
@@ -123,20 +108,19 @@ describe 'FeatureManager', ->
   
   describe '#loadFeatures', ->
     it 'chains #loadPage of all the features', (done) ->
-      feature1 = new DummyFeature(title: 'f1', delay: 50)
+      feature1 = new DummyFeature(title: 'f1', delay: 10)
       feature2 = new DummyFeature(dependencies: ['f1'])
       featureManager.addFeature feature1
       featureManager.addFeature feature2
       featureManager.loadFeatures()
       feature1.loadPageCalls.length.should.equal 1
       feature2.loadPageCalls.length.should.equal 0
-      setTimeout (->
+      feature1.on 'pageLoaded', ->
         try
           feature2.loadPageCalls.length.should.equal 1
           done()
         catch e
           done(e)
-      ), 100
     
     it "doesn't throw an exception when there are no features", ->
       featureManager.loadFeatures()
