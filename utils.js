@@ -1,6 +1,14 @@
 var fs = require('fs');
 
-var getFiles = exports.getFiles = function(path) {
+var dirname = exports.dirname = function(path) {
+  path = path.replace(/\/[^\/]+\/?$/, '');
+  if (path === '') {
+    return '/';
+  }
+  return path;
+};
+
+var findFiles = exports.findFiles = function(path) {
   var i, entry, list, files = [];
   if (fs.isFile(path)) {
     return [path];
@@ -11,13 +19,30 @@ var getFiles = exports.getFiles = function(path) {
     
     entry = fs.absolute(path + fs.separator + list[i]);
     if (fs.isDirectory(entry)) {
-      files.push.apply(files, getFiles(entry));
+      files.push.apply(files, findFiles(entry));
     } else if (entry.match(/\.(js|coffee)$/)) {
       files.push(entry);
     }
   }
   
   return files;
+};
+
+exports.findEnvFile = function(path) {
+  while (path.length > 1) {
+    if (fs.isFile(path + fs.separator + 'env.js')) {
+      return path + fs.separator + 'env.js';
+    } else if (fs.isFile(path + fs.separator + 'env.coffee')) {
+      return path + fs.separator + 'env.coffee';
+    }
+    path = dirname(path);
+  }
+};
+
+exports.getPath = function(path) {
+  path = path || './test';
+  if (path[0] !== '/' && path[0] !== '.') path = './' + path;
+  return path;
 };
 
 exports.injectArgs = function(args, fn) {

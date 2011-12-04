@@ -9,8 +9,8 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
-app.get('/test', function(req, res) {
-  res.send('hello');
+app.get('/subpage', function(req, res) {
+  res.render('subpage');
 });
 
 app.listen(4567);

@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 var Browser = require('./Browser');
+var config = require('./environment').config;
 
 var FeatureManager = exports.FeatureManager = function FeatureManager(rootSuite) {
   this.rootSuite = rootSuite;
@@ -55,10 +56,16 @@ FeatureManager.prototype.loadFeatures = function() {
 };
 
 var Feature = exports.Feature = function Feature(suite, options, fn) {
+  if (!fn) {
+    fn = options;
+    options = {};
+  }
   this.suite = suite;
   this.title = suite.title;
-  this.url = options.url;
-  this.dependencies = options.dependsOn;
+  this.url = options.url || '';
+  if (!this.url.match(/^\w+:\/\//))
+    this.url = config.baseUrl + this.url;
+  this.dependencies = options.dependsOn || [];
   this.fn = fn;
   this.browser = new Browser;
 };

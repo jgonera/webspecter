@@ -1,4 +1,4 @@
-feature 'PageQuery', url: 'http://localhost:4567', ->
+feature 'Queries', url: 'http://localhost:4567', ->
   describe '#text', ->
     it "returns element's text content", ->
       $('title').text.should.equal 'WebSpecter Test Server'

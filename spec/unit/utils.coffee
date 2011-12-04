@@ -1,6 +1,13 @@
 utils = require '../../utils'
 
 describe 'utils', ->
+  describe "#dirname", ->
+    it "returns the parent path of a path", ->
+      utils.dirname('/some/path/file.ext').should.equal '/some/path'
+      utils.dirname('/some/path/').should.equal '/some'
+      utils.dirname('/some').should.equal '/'
+      utils.dirname('/').should.equal '/'
+  
   describe '#injectArgs', ->
     it 'injects primitive types', ->
       fn = utils.injectArgs { aString: 'abc', aNumber: 23, aBool: true }, ->
