@@ -1,6 +1,6 @@
 feature 'Environment functionality', url: '/subpage', ->
   it 'loads the url using baseUrl', ->
-    $('p').text.should.equal 'Subpage'
+    $('p').text.should.equal 'subpage'
   
   it 'extends the globals', ->
     pageTitle().should.equal 'WebSpecter Test Server'

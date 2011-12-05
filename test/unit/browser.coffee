@@ -10,7 +10,7 @@ describe 'Browser', ->
   
   describe '#query', ->
     it 'returns a PageQuery object', ->
-      browser.query('fake').should.be.an.instanceOf PageQuery
+      browser.query('body').should.be.an.instanceOf PageQuery
   
   describe '#onLoaded', ->  
     it 'runs the callback after the page is loaded', (done) ->

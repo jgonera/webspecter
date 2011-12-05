@@ -37,6 +37,7 @@ exports.findEnvFile = function(path) {
     }
     path = dirname(path);
   }
+  return null;
 };
 
 exports.getPath = function(path) {
