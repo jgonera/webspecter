@@ -1,4 +1,8 @@
 <p id="info">no info</p>
+<label for="infoText">info text:</label>
+<input type="text" id="infoText" name="infoText" value="initial value" />
+<label>dummy field: <input type="text" name="dummyField" value="dummy value" />
+<button id="setInfo">set info</button>
 
 <div id="mouse">
   <a id="mousedown" href="#">mousedown</a>
@@ -21,7 +25,9 @@
 
 <script>
   //throw new Error('yeah');
-
+  
+  $('#setInfo').click(function() { $('#info').text($('input[name=infoText]').val()); });
+  
   var logEvent = function(e) {
     $('#info').text(e.type + ' fired');
   };

@@ -1,5 +1,5 @@
 feature 'Cookies', ->
-  it 'sets and reads cookie', ->
+  it 'sets and reads a cookie', ->
     $('#setCookie').click()
     $('#getCookie').click()
     $('#info').text.should.equal 'bar'

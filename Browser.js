@@ -15,7 +15,7 @@ var Browser = module.exports = function Browser() {
   this.page = require('webpage').create();
   this.loaded = false;
   
-//  this.page.viewportSize = { width: 1024, height: 768 }
+  this.page.viewportSize = { width: 1024, height: 768 }
   
   this.page.onConsoleMessage = function(msg, line, fileName) {
 //    if (msg.indexOf('Error') !== -1) {

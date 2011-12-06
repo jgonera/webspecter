@@ -38,11 +38,13 @@ Engine.prototype.run = function() {
   // a hack to show the test body as a stack trace on errors
   runner.on('test', function(test) {
     test.fn._isTest = true;
+    global.feature.currentTestTitle = test.title
+    global.feature.currentTestFullTitle = test.fullTitle();
   });
   var reporter = new Reporter(runner);
   
   this.featureManager.loadFeatures();
   this.rootSuite.emit('run');
-  runner.run();
+  runner.run(process.exit);
 };
 
