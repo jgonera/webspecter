@@ -34,10 +34,33 @@ feature 'Queries', ->
   describe '#value', ->
     it "returns field's value", ->
       $('#infoText').value.should.equal 'initial value'
-  
+
+  describe '#checked', ->
+    it "returns true if checkbox is checked", ->
+      $('#checkedCheckbox').checked.should.equal true
+    
+    it "returns false if checkbox is unchecked", ->
+      $('#uncheckedCheckbox').checked.should.equal false
+
   describe '#attr', ->
     it "returns element's attribute", ->
       $('#link').attr('href').should.equal '/subpage'
+  
+  describe '#fill', ->
+    it "fills an input with text", ->
+      $('input[name="infoText"]').fill 'input text'
+      $(button: 'set info').click()
+      $('#info').text.should.equal 'input text'
+  
+  describe '#check', ->
+    it "checks the checkbox", ->
+      $(field: 'unchecked checkbox').check()
+      $(field: 'unchecked checkbox').checked.should.equal true
+  
+  describe '#uncheck', ->
+    it "unchecks the checkbox", ->
+      $(field: 'checked checkbox').uncheck()
+      $(field: 'checked checkbox').checked.should.equal false
   
   describe '#click', ->
     it "fires a mousedown event", ->
@@ -57,12 +80,15 @@ feature 'Queries', ->
       after (done) -> $(link: 'home').click(done)
       it "follows it", ->
         $('h1').text.should.equal 'subpage'
-  
-  describe '#fill', ->
-    it "fills an input with text", ->
-      $('input[name="infoText"]').fill 'input text'
-      $(button: 'set info').click()
-      $('#info').text.should.equal 'input text'
+    
+    describe "when a submit button is clicked", ->
+      before (done) ->
+        
+        $(button: 'submit test').click(done)
+      after (done) -> $(link: 'home').click(done)
+      it "submits the form", ->
+        $('p')[0].text.should.equal 'input: test value'
+        #$('p')[1].text.should.equal 'checkbox: checked'
   
   describe "when there are more elements", ->
     it "lets us access them with an index", ->

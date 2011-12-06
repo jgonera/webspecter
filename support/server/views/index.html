@@ -17,13 +17,21 @@
     <input type="text" id="infoText" name="infoText" value="initial value">
     <button id="setInfo">set info</button>
   </article>
-
-  <form action="/form" method="post">
+  
+  <article>
     <div>
-      <label>test input: <input type="text" name="testInput" value="test value"></label>
+      <input id="uncheckedCheckbox" name="uncheckedCheckbox" type="checkbox" value="1">
+      <label for="uncheckedCheckbox">unchecked checkbox</label>
     </div>
     <div>
-      <input id="testCheckbox" name="testCheckbox" type="checkbox" value="checked"><label for="testCheckbox">test checkbox</label>
+      <input id="checkedCheckbox" name="checkedCheckbox" type="checkbox" checked="checked" value="1">
+      <label for="checkedCheckbox">checked checkbox</label>
+    </div>
+  </article>
+  
+  <form action="/post" method="post">
+    <div>
+      <label>test input: <input type="text" name="testInput" value="test value"></label>
     </div>
     <input type="submit" id="submitButton" value="submit test">
   </form>

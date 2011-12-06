@@ -35,12 +35,36 @@ var queryPrototype = {
     });
   },
   
+  get checked() {
+    return this._evaluate(function(element) {
+      return element.checked;
+    });
+  },
+  
   attr: function(name) {
     return this._evaluate(injectArgs({ name: name }, function(element) {
       return element.getAttribute($name);
     }));
   },
-
+  
+  fill: function(value) {
+    this._evaluate(injectArgs({ value: value }, function(element) {
+      element.value = $value;
+    }));
+  },
+  
+  check: function() {
+    this._evaluate(function(element) {
+      element.checked = true;
+    });
+  },
+  
+  uncheck: function() {
+    this._evaluate(function(element) {
+      element.checked = false;
+    });
+  },
+  
   mouse: function(options) {
     extend(options, {
       type: 'click',
@@ -67,24 +91,18 @@ var queryPrototype = {
     var buttonCode = { left: 0 }[button];
     if (typeof buttonCode === 'undefined')
       throw new Error('Wrong mouse button name: ' + button);
-      
+    
+    if (callback) this._browser.once('loadFinished', callback);
+    
     this.mouse({ type: 'mousedown', button: buttonCode });
     this.mouse({ type: 'mouseup', button: buttonCode });
     this.mouse({ type: 'click', button: buttonCode });
-    
-    if (callback) this._browser.onLoaded(callback);
   },
   
   each: function(fn) {
     for (var i=0; i<this.length; ++i) {
       fn(this[i]);
     }
-  },
-  
-  fill: function(value) {
-    this._evaluate(injectArgs({ value: value }, function(element) {
-      element.value = $value;
-    }));
   }
 };
 
