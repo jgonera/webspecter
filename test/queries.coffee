@@ -1,4 +1,7 @@
 feature 'Queries', ->
+#  i = 1
+#  afterEach -> browser.page.render "shots/#{i++} #{feature.currentTestFullTitle}.png"
+  
   it "throws an error if no elements found", ->
     error = false
     try $('banana')
@@ -11,11 +14,18 @@ feature 'Queries', ->
   
   it "finds elements by their text content", ->
     $(text: 'first item').text.should.equal 'first item'
+  
+  it "finds links by their text", ->
+    $(link: 'subpage').attr('href').should.equal '/subpage'
     
   it "finds fields by their label", ->
     $(field: 'info text:').value.should.equal 'initial value'
     $(field: 'info text').value.should.equal 'initial value'
-    $(field: 'dummy field').value.should.equal 'dummy value'
+    $(field: 'test input').value.should.equal 'test value'
+  
+  it "finds buttons by their caption", ->
+    $(button: 'set info').attr('id').should.equal 'setInfo'
+    $(button: 'submit test').attr('id').should.equal 'submitButton'
 
   describe '#text', ->
     it "returns element's text content", ->
@@ -43,15 +53,15 @@ feature 'Queries', ->
       $('#info').text.should.equal 'click fired'
     
     describe "when a link is clicked", ->
-      before (done) -> $('#link').click(done)
-      after (done) -> $('#home').click(done)
+      before (done) -> $(link: 'subpage').click(done)
+      after (done) -> $(link: 'home').click(done)
       it "follows it", ->
-        $('p').text.should.equal 'subpage'
+        $('h1').text.should.equal 'subpage'
   
   describe '#fill', ->
     it "fills an input with text", ->
       $('input[name="infoText"]').fill 'input text'
-      $(text: 'set info').click()
+      $(button: 'set info').click()
       $('#info').text.should.equal 'input text'
   
   describe "when there are more elements", ->
@@ -68,3 +78,4 @@ feature 'Queries', ->
     
     it "lets us access the last element with #last", ->
       $('ol li').last.text.should.include.string 'third'
+      

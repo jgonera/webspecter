@@ -100,20 +100,23 @@ var PageQuery = module.exports = function PageQuery(browser, query) {
   } else if (query.text) {
     this._query = '//*[text()="' + query.text + '"]';
     this._type = 'xpath';
+  } else if (query.link) {
+    this._query = '//a[text()="' + query.link + '"]';
+    this._type = 'xpath';
   } else if (query.field) {
-    var label = new PageQuery(browser, {
-      xpath: '//label[normalize-space(text())="' + query.field +
-      '" or substring-before(normalize-space(text()), ":")="' + query.field + '"]'
-    });
-    if (label.attr('for')) {
-      this._query = '#' + label.attr('for');
-      this._type = 'css';
-    } else {
-      this._query = '//label[normalize-space(text())="' + query.field +
-      '" or substring-before(normalize-space(text()), ":")="' + query.field + '"]' +
-      '/*';
-      this._type = 'xpath';
-    }
+    var labelXpath = '//label[normalize-space(text())="' + query.field +
+      '" or substring-before(normalize-space(text()), ":")="' + query.field + '"]';
+    var forXpath = '//*[@id=' + labelXpath + '/@for]';
+    var childXpath = labelXpath + '/*';
+    this._query =  forXpath + '|' + childXpath;
+    this._type = 'xpath';
+  } else if (query.button) {
+    var buttonXpath = '//button[text()="' + query.button + '"]';
+    var inputXpath = '//input[contains("button,submit,image,reset", @type) and @value="' + query.button + '"]';
+    this._query =  buttonXpath + '|' + inputXpath;
+    this._type = 'xpath';
+  } else {
+    throw new Error('Invalid query "' + util.inspect(query) + '"');
   }
   this._page = browser.page;
   this._n = 0;

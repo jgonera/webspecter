@@ -18,11 +18,7 @@ var Browser = module.exports = function Browser() {
   this.page.viewportSize = { width: 1024, height: 768 }
   
   this.page.onConsoleMessage = function(msg, line, fileName) {
-//    if (msg.indexOf('Error') !== -1) {
-//      throw new PageError(msg, line, fileName);
-//    } else {
-      console.log('%s:%d %s', fileName, line, msg);
-//    }
+    console.log('%s:%d %s', fileName, line, msg);
   };
 
   this.page.onLoadStarted = function() {

@@ -1,31 +1,50 @@
+<h1>home</h1>
 <p id="info">no info</p>
-<label for="infoText">info text:</label>
-<input type="text" id="infoText" name="infoText" value="initial value" />
-<label>dummy field: <input type="text" name="dummyField" value="dummy value" />
-<button id="setInfo">set info</button>
 
-<div id="mouse">
+<section>
+  <h2>mouse</h2>
   <a id="mousedown" href="#">mousedown</a>
   <button id="mouseup">mouseup</button>
   <span id="click">click</span>
   
   <a id="link" href="/subpage">subpage</a>
-</div>
+</section>
 
-<div id="cookies">
+<section>
+  <h2>forms</h2>
+  <article>
+    <label for="infoText">info text:</label>
+    <input type="text" id="infoText" name="infoText" value="initial value">
+    <button id="setInfo">set info</button>
+  </article>
+
+  <form action="/form" method="post">
+    <div>
+      <label>test input: <input type="text" name="testInput" value="test value"></label>
+    </div>
+    <div>
+      <input id="testCheckbox" name="testCheckbox" type="checkbox" value="checked"><label for="testCheckbox">test checkbox</label>
+    </div>
+    <input type="submit" id="submitButton" value="submit test">
+  </form>
+</section>
+
+<section>
+  <h2>enumerable</h2>
+  <ol>
+    <li>first item</li>
+    <li>second item</li>
+    <li>third item</li>
+  </ol>
+</section>
+
+<section>
+  <h2>cookies</h2>
   <button id="setCookie">set cookie</button>
   <button id="getCookie">get cookie</button>
-</div>
-
-<ol>
-  <li>first item</li>
-  <li>second item</li>
-  <li>third item</li>
-</ol>
+</section>
 
 <script>
-  //throw new Error('yeah');
-  
   $('#setInfo').click(function() { $('#info').text($('input[name=infoText]').val()); });
   
   var logEvent = function(e) {
