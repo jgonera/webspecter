@@ -9,6 +9,7 @@ var Reporter = require('./mocha/lib/reporters/spec');
 var Engine = exports.Engine = function Engine(path) {
   this.path = path;
   this.rootSuite = new mocha.Suite('');
+  this.rootSuite.timeout(5000);
   var ui = mocha.interfaces['bdd'];
   ui(this.rootSuite);
   this.featureManager = new FeatureManager(this.rootSuite);

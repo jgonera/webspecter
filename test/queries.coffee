@@ -2,9 +2,14 @@ feature 'Queries', ->
 #  i = 1
 #  afterEach -> browser.page.render "shots/#{i++} #{feature.currentTestFullTitle}.png"
   
-  it "throws an error if no elements found", ->
+  it "throws an error if no elements found and property is accessed", ->
     error = false
-    try $('banana')
+    try $('banana').text
+    catch e
+      error = true
+    finally error.should.equal true
+    error = false
+    try $('cup').fill 'tea'
     catch e
       error = true
     finally error.should.equal true
@@ -26,20 +31,26 @@ feature 'Queries', ->
   it "finds buttons by their caption", ->
     $(button: 'set info').attr('id').should.equal 'setInfo'
     $(button: 'submit test').attr('id').should.equal 'submitButton'
-
+  
+  describe '#exists', ->
+    it "is true if element found", ->
+      $('p').exists.should.equal true
+    it "is false if element not found", ->
+      $('banana').exists.should.equal false
+  
   describe '#text', ->
-    it "returns element's text content", ->
+    it "equals element's text content", ->
       $('title').text.should.equal 'WebSpecter Test Server'
   
   describe '#value', ->
-    it "returns field's value", ->
+    it "equals field's value", ->
       $('#infoText').value.should.equal 'initial value'
 
   describe '#checked', ->
-    it "returns true if checkbox is checked", ->
+    it "equals true if checkbox is checked", ->
       $('#checkedCheckbox').checked.should.equal true
     
-    it "returns false if checkbox is unchecked", ->
+    it "equals false if checkbox is unchecked", ->
       $('#uncheckedCheckbox').checked.should.equal false
 
   describe '#attr', ->
@@ -78,17 +89,16 @@ feature 'Queries', ->
     describe "when a link is clicked", ->
       before (done) -> $(link: 'subpage').click(done)
       after (done) -> $(link: 'home').click(done)
+      
       it "follows it", ->
         $('h1').text.should.equal 'subpage'
     
     describe "when a submit button is clicked", ->
-      before (done) ->
-        
-        $(button: 'submit test').click(done)
+      before (done) -> $(button: 'submit test').click(done)
       after (done) -> $(link: 'home').click(done)
+      
       it "submits the form", ->
         $('p')[0].text.should.equal 'input: test value'
-        #$('p')[1].text.should.equal 'checkbox: checked'
   
   describe "when there are more elements", ->
     it "lets us access them with an index", ->
@@ -104,4 +114,4 @@ feature 'Queries', ->
     
     it "lets us access the last element with #last", ->
       $('ol li').last.text.should.include.string 'third'
-      
+  

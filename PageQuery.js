@@ -4,10 +4,12 @@ var injectArgs = utils.injectArgs;
 var extend = utils.extend;
 
 
-var queryPrototype = {
+var QueryBase = function() {};
+
+QueryBase.prototype = {
   _evaluate: function(fn) {
     return this._page.evaluate(injectArgs({
-      id: this._id, query: this._query, n: this._n, fn: fn
+      id: this._id, n: this._n, fn: fn
     }, function() {
       var element = window._webspecter[$id][$n];
       
@@ -22,7 +24,11 @@ var queryPrototype = {
       return element.dispatchEvent(e);
     }));
   },
-
+  
+  get exists() {
+    return this.length !== 0;
+  },
+  
   get text() {
     return this._evaluate(function(element) {
       return element.textContent;
@@ -109,6 +115,25 @@ var queryPrototype = {
 
 var PageQuery = module.exports = function PageQuery(browser, query) {
   this._browser = browser;
+  this._queryObj = query;
+  this._parseQuery();
+  this._page = browser.page;
+  this._n = 0;
+  this._id = this._query + new Date().getTime().toString() + Math.random().toString();
+  
+  this._evaluateQuery();
+  
+  if (this.length === 0) {
+    this._nullifyProperties();
+  } else {
+    this._addSubqueries();
+  }
+}
+
+PageQuery.prototype = new QueryBase;
+
+PageQuery.prototype._parseQuery = function() {
+  var query = this._queryObj;
   if (typeof query === 'string') {
     this._query = query;
     this._type = 'css';
@@ -136,10 +161,9 @@ var PageQuery = module.exports = function PageQuery(browser, query) {
   } else {
     throw new Error('Invalid query "' + util.inspect(query) + '"');
   }
-  this._page = browser.page;
-  this._n = 0;
-  this._id = this._query + new Date().getTime().toString() + Math.random().toString();
-  
+};
+
+PageQuery.prototype._evaluateQuery = function() {
   this.length = this._page.evaluate(injectArgs({
     id: this._id, query: this._query, type: this._type
   }, function() {
@@ -161,25 +185,36 @@ var PageQuery = module.exports = function PageQuery(browser, query) {
     window._webspecter[$id] = elements;
     return elements.length;
   }));
-  
-  if (this.length === 0)
-    throw new Error('No element found for "' + util.inspect(query) + '"');
-  
+};
+
+PageQuery.prototype._nullifyProperties = function() {
+  var throwNotFound = function() {
+    throw new Error('No element found for "' + util.inspect(this._queryObj) + '"');
+  };
+  var nullProperties = {};
+  for (var key in this) {
+    if (key[0] !== '_' && key !== 'length' && key !== 'exists') {
+      nullProperties[key] = { get: throwNotFound };
+    }
+  }
+  Object.defineProperties(this, nullProperties);
+};
+
+PageQuery.prototype._addSubqueries = function() {
   for (var i=0; i<this.length; ++i) {
     this[i] = new SubQuery(this, i);
   }
   this.last = this[this.length - 1];
-}
+};
 
-PageQuery.prototype = queryPrototype;
 
 var SubQuery = function SubQuery(parent, n) {
   this._browser = parent._browser;
   this._query = parent._query;
   this._page = this._browser.page;
-  this._n = n || 0;
+  this._n = n || parent._n;
   this._id = parent._id;
 };
 
-SubQuery.prototype = queryPrototype;
+SubQuery.prototype = new QueryBase;
 

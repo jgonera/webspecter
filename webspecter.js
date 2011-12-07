@@ -1,7 +1,7 @@
 var nodify = 'nodify/nodify.js';
 phantom.injectJs(nodify);
 
-var assert, should, feature, browser, $;
+var assert, should, feature, browser, $, wait;
 
 nodify.run(function() {
   require('./patches');

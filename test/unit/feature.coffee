@@ -1,6 +1,5 @@
 {EventEmitter} = require('events')
 {Feature, FeatureManager} = require('../../feature')
-Browser = require('../../Browser')
 
 class DummySuite extends EventEmitter
   constructor: ->
@@ -58,8 +57,9 @@ describe 'Feature', ->
       suite.on 'beforeAll done', done
       feature.loadPage()
       feature.load(rootSuite)
-      global.browser.should.be.an.instanceOf Browser
+      global.browser.should.equal feature.browser
       global.$.should.be.an.instanceOf Function
+      global.wait.should.equal feature.wait
       
     it "runs the feature description function", ->
       feature.load(rootSuite)

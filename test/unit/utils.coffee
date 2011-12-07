@@ -45,3 +45,4 @@ describe 'utils', ->
       source = { banana: 2, pizza: 1 }
       utils.extend object, source
       object.should.eql { banana: 4, cake: 2, pizza: 1 }
+      

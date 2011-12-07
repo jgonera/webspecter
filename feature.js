@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 var Browser = require('./Browser');
+var Waiter = require('./waiter').Waiter;
 var config = require('./environment').config;
 
 var FeatureManager = exports.FeatureManager = function FeatureManager(rootSuite) {
@@ -68,17 +69,19 @@ var Feature = exports.Feature = function Feature(suite, options, fn) {
   this.dependencies = options.dependsOn || [];
   this.fn = fn;
   this.browser = new Browser;
+  this.wait = new Waiter(this.browser);
 };
 
 Feature.prototype = new EventEmitter;
 
 Feature.prototype.load = function(rootSuite) {
   rootSuite.addSuite(this.suite);
-  var browser = this.browser;
+  var self = this;
   this.suite.emit('pre-require', global);
   this.suite.beforeAll(function(done) {
-    global.browser = browser;
-    global.$ = browser.query.bind(browser);
+    global.browser = self.browser;
+    global.$ = self.browser.query.bind(self.browser);
+    global.wait = self.wait;
     browser.onLoaded(done);
   });
   

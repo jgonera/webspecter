@@ -47,6 +47,13 @@
 </section>
 
 <section>
+  <h2>async</h2>
+  
+  <button id="delayAddButton">add element with delay</button>
+  <button id="delayRemoveButton">remove element with delay</button>
+</section>
+
+<section>
   <h2>cookies</h2>
   <button id="setCookie">set cookie</button>
   <button id="getCookie">get cookie</button>
@@ -62,6 +69,18 @@
   $('#mousedown').mousedown(logEvent);
   $('#mouseup').mouseup(logEvent);
   $('#click').click(logEvent);
+  
+  $('#delayAddButton').click(function() {
+    var section = $(this).parent();
+    setTimeout(function() {
+      section.append('<p id="delayed">delayed element</p>');
+    }, 100);
+  });
+  $('#delayRemoveButton').click(function() {
+    setTimeout(function() {
+      $('#delayed').remove();
+    }, 100);
+  });
   
   $('#setCookie').click(function() { $.cookie('foo', 'bar'); });
   $('#getCookie').click(function() { $('#info').text($.cookie('foo')); });
