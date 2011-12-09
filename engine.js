@@ -6,8 +6,8 @@ var Feature = require('./feature').Feature;
 var mocha = require('./mocha');
 var Reporter = require('./mocha/lib/reporters/spec');
 
-var Engine = exports.Engine = function Engine(path) {
-  this.path = path;
+var Engine = exports.Engine = function Engine(options) {
+  this.options = options;
   this.rootSuite = new mocha.Suite('');
   this.rootSuite.timeout(5000);
   var ui = mocha.interfaces['bdd'];
@@ -22,19 +22,21 @@ var Engine = exports.Engine = function Engine(path) {
     this.featureManager.addFeature(new Feature(suite, options, fn));
   }.bind(this);
 
-  environment.load(utils.findEnvFile(path));
+  environment.load(utils.findEnvFile(options.path));
   utils.extend(global, environment.global);
 };
 
 Engine.prototype.run = function() {
-  var files = utils.findFiles(this.path);
+  var files = utils.findFiles(this.options.path);
 
   for (var i=0; i<files.length; ++i) {
     this.rootSuite.emit('pre-require', global);
     require(files[i]);
     this.rootSuite.emit('post-require', global);
   }
-
+  
+  this.featureManager.loadFeatures(this.options.feature);
+  
   var runner = new mocha.Runner(this.rootSuite);
   // a hack to show the test body as a stack trace on errors
   runner.on('test', function(test) {
@@ -44,7 +46,6 @@ Engine.prototype.run = function() {
   });
   var reporter = new Reporter(runner);
   
-  this.featureManager.loadFeatures();
   this.rootSuite.emit('run');
   runner.run(process.exit);
 };

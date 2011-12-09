@@ -6,8 +6,8 @@ var config = require('./environment').config;
 var FeatureManager = exports.FeatureManager = function FeatureManager(rootSuite) {
   this.rootSuite = rootSuite;
   this.features = {};
-  this.length = 0;
   this.loaded = [];
+  this.pending = [];
 };
 
 FeatureManager.prototype.addFeature = function(feature) {
@@ -19,6 +19,26 @@ FeatureManager.prototype.addFeature = function(feature) {
   this.length += 1;
 };
 
+FeatureManager.prototype._enqueue = function(feature, route) {
+  route = route || [];
+  
+  if (route.indexOf(feature.title) !== -1)
+    throw new Error("Can't load features because of circular dependencies: " +
+      route.concat(feature.title).join(' -> '));
+  
+  feature.dependencies.forEach(function(dependency) {
+    if (dependency in this.features) {
+      this._enqueue(this.features[dependency], route.concat(feature.title));
+    } else {
+      throw new Error("Can't load feature \"" + feature.title +
+        "\" because of unmet dependency: \"" + dependency + '"');
+    }
+  }.bind(this));
+  
+  if (this.pending.indexOf(feature.title) === -1)
+    this.pending.push(feature.title);
+};
+
 FeatureManager.prototype._canLoad = function(feature) {
   for (var i in feature.dependencies) {
     if (this.loaded.indexOf(feature.dependencies[i]) === -1) {
@@ -28,32 +48,31 @@ FeatureManager.prototype._canLoad = function(feature) {
   return true;
 };
 
-FeatureManager.prototype.loadFeatures = function() {
-  var i, title, feature, prevFeature, prevLoadedLength;
+FeatureManager.prototype.loadFeatures = function(featureMatch) {
+  var title, feature, prevFeature;
   
-  // load all the features
-  while (this.loaded.length < this.length) {
-    prevLoadedLength = this.loaded.length;
-    for (title in this.features) {
-      var feature = this.features[title];
-      
-      if (this._canLoad(feature) && this.loaded.indexOf(title) === -1) {
-        if (prevFeature) {
-          // add page to the chain-loading
-          prevFeature.on('pageLoaded', feature.loadPage.bind(feature));
-        } else {
-          feature.loadPage();
-        }
-        feature.load(this.rootSuite);
-        this.loaded.unshift(title);
-        prevFeature = feature;
-      }
-    };
-    
-    if (this.loaded.length === prevLoadedLength) {
-      throw Error("Can't load features because of circular dependencies!");
+  // queue relevant features
+  for (title in this.features) {
+    var feature = this.features[title];
+    if (!featureMatch || title === featureMatch) {
+      this._enqueue(feature);
     }
   }
+  
+  // load the features
+  this.pending.forEach(function(title) {
+    var feature = this.features[title];
+    
+    if (prevFeature) {
+      // add page to the chain-loading
+      prevFeature.on('pageLoaded', feature.loadPage.bind(feature));
+    } else {
+      feature.loadPage();
+    }
+    feature.load(this.rootSuite);
+    this.loaded.unshift(title);
+    prevFeature = feature;
+  }.bind(this));
 };
 
 var Feature = exports.Feature = function Feature(suite, options, fn) {

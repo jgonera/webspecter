@@ -93,7 +93,6 @@ describe 'FeatureManager', ->
     it 'adds a feature to the FeatureManager', ->
       feature = new DummyFeature(title: 'feature')
       featureManager.addFeature feature
-      featureManager.length.should.equal 1
       featureManager.features['feature'].should.equal feature
     
     it 'throws an error when adding features with the same title', ->
@@ -160,7 +159,40 @@ describe 'FeatureManager', ->
         featureManager.loadFeatures()
       catch e
         error = true
+        e.message.should.include.string 'circular'
       finally
         error.should.equal true
+    
+    it "throws an error on unmet dependencies", ->
+      error = false
+      featureManager.addFeature new DummyFeature(title: 'f1', dependencies: ['f2'])
+      try
+        featureManager.loadFeatures()
+      catch e
+        error = true
+        e.message.should.include.string 'unmet'
+      finally
+        error.should.equal true
+    
+    describe "when the feature is specified by the argument", ->
+      it "loads only this feature", ->
+        feature1 = new DummyFeature(title: 'f1')
+        feature2 = new DummyFeature(title: 'f2')
+        featureManager.addFeature feature1
+        featureManager.addFeature feature2
+        featureManager.loadFeatures('f1')
+        feature1.loadCalls.length.should.equal 1
+        feature2.loadCalls.length.should.equal 0
       
+      it "loads only this feature and its dependencies", ->
+        feature1 = new DummyFeature(title: 'f1', dependencies: ['f3'])
+        feature2 = new DummyFeature(title: 'f2')
+        feature3 = new DummyFeature(title: 'f3')
+        featureManager.addFeature feature1
+        featureManager.addFeature feature2
+        featureManager.addFeature feature3
+        featureManager.loadFeatures('f1')
+        feature1.loadCalls.length.should.equal 1
+        feature2.loadCalls.length.should.equal 0
+        feature3.loadCalls.length.should.equal 1
       
