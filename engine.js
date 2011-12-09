@@ -38,8 +38,8 @@ Engine.prototype.run = function() {
   this.featureManager.loadFeatures(this.options.feature);
   
   var runner = new mocha.Runner(this.rootSuite);
-  // a hack to show the test body as a stack trace on errors
   runner.on('test', function(test) {
+    // a hack to show the test body as a stack trace on errors
     test.fn._isTest = true;
     global.feature.currentTestTitle = test.title
     global.feature.currentTestFullTitle = test.fullTitle();
