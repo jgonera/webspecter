@@ -29,6 +29,7 @@ var findFiles = exports.findFiles = function(path) {
 };
 
 exports.findEnvFile = function(path) {
+  path = fs.absolute(path);
   while (path.length > 1) {
     if (fs.isFile(path + fs.separator + 'env.js')) {
       return path + fs.separator + 'env.js';

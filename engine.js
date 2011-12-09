@@ -21,7 +21,7 @@ var Engine = exports.Engine = function Engine(options) {
     ui(suite);
     this.featureManager.addFeature(new Feature(suite, options, fn));
   }.bind(this);
-
+  
   environment.load(utils.findEnvFile(options.path));
   utils.extend(global, environment.global);
 };
