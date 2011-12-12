@@ -1,7 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var Browser = require('./Browser');
 var Waiter = require('./waiter').Waiter;
-var config = require('./environment').config;
+
 
 var FeatureManager = exports.FeatureManager = function FeatureManager(rootSuite) {
   this.rootSuite = rootSuite;
@@ -83,8 +83,6 @@ var Feature = exports.Feature = function Feature(suite, options, fn) {
   this.suite = suite;
   this.title = suite.title;
   this.url = options.url || '';
-  if (!this.url.match(/^\w+:\/\//))
-    this.url = config.baseUrl + this.url;
   this.dependencies = options.dependsOn || [];
   this.fn = fn;
   this.browser = new Browser;

@@ -1,5 +1,7 @@
 Browser = require '../../Browser'
 PageQuery = require '../../PageQuery'
+{config} = require '../../environment'
+config.baseUrl = 'http://localhost:4567'
 
 
 describe 'Browser', ->
@@ -9,16 +11,25 @@ describe 'Browser', ->
     browser = new Browser
   
   describe '#visit', ->
-    beforeEach (done) -> browser.visit 'http://localhost:4567', done
+    it "loads the page", (done) ->
+      browser.visit 'http://localhost:4567', ->
+        title = browser.page.evaluate ->
+          document.querySelector('title').textContent
+        title.should.equal 'WebSpecter Test Server'
+        done()
+      
+    it "loads the subpage using config's baseUrl", (done) ->
+      browser.visit '/subpage', ->
+        title = browser.page.evaluate ->
+          document.querySelector('title').textContent
+        title.should.equal 'WebSpecter Test Server'
+        done()
     
-    it "loads the page", ->
-      title = browser.page.evaluate ->
-        document.querySelector('title').textContent
-      title.should.equal 'WebSpecter Test Server'
-    
-    it "sets the URL", ->
-      browser.initialUrl.should.equal 'http://localhost:4567'
-      browser.url.should.equal 'http://localhost:4567/'
+    it "sets the URL", (done) ->
+      browser.visit 'http://localhost:4567', ->
+        browser.initialUrl.should.equal 'http://localhost:4567'
+        browser.url.should.equal 'http://localhost:4567/'
+        done()
   
   describe '.url', ->
     beforeEach (done) ->

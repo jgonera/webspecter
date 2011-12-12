@@ -1,6 +1,8 @@
 var EventEmitter = require('events').EventEmitter;
 var PageQuery = require('./PageQuery');
 var util = require('util');
+var config = require('./environment').config;
+
 
 var PageError = function(message, line, fileName) {
   this.name = 'PageError';
@@ -33,7 +35,7 @@ var Browser = module.exports = function Browser() {
       return document.location.href;
     });
     if (status !== 'success') {
-      self.error = new Error("Unable to load " + self.url);
+      self.error = new Error("Unable to load " + self.initialUrl);
     } else {
       self.error = null;
     }
@@ -45,8 +47,12 @@ var Browser = module.exports = function Browser() {
 Browser.prototype = new EventEmitter;
 
 Browser.prototype.visit = function(url, callback) {
-  this.initialUrl = url;
-  this.page.open(encodeURI(url));
+  if (url.match(/^\w+:\/\//)) {
+    this.initialUrl = url;
+  } else {
+    this.initialUrl = config.baseUrl + url;
+  }
+  this.page.open(encodeURI(this.initialUrl));
   if (callback) this.onceLoaded(callback);
 };
 
