@@ -72,13 +72,15 @@ describe 'Feature', ->
       emitted.should.equal true
   
   describe '#loadPage', ->
-    it 'loads the page', ->
-      feature.loadPage()
-      feature.browser.url.should.equal 'http://localhost:4567'
-    
     it 'emits pageLoaded', (done) ->
-      feature.on 'pageLoaded', done
+      feature.once 'pageLoaded', done
       feature.loadPage()
+      
+    it 'loads the page', (done) ->
+      feature.loadPage()
+      feature.once 'pageLoaded', ->
+        feature.browser.url.should.equal 'http://localhost:4567/'
+        done()
       
 
 describe 'FeatureManager', ->

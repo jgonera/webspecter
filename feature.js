@@ -65,7 +65,7 @@ FeatureManager.prototype.loadFeatures = function(featureMatch) {
     
     if (prevFeature) {
       // add page to the chain-loading
-      prevFeature.on('pageLoaded', feature.loadPage.bind(feature));
+      prevFeature.once('pageLoaded', feature.loadPage.bind(feature));
     } else {
       feature.loadPage();
     }
@@ -101,7 +101,7 @@ Feature.prototype.load = function(rootSuite) {
     global.browser = self.browser;
     global.$ = self.browser.query.bind(self.browser);
     global.wait = self.wait;
-    browser.onLoaded(done);
+    browser.onceLoaded(done);
   });
   
   this.fn();
@@ -109,8 +109,8 @@ Feature.prototype.load = function(rootSuite) {
 };
 
 Feature.prototype.loadPage = function() {
-  this.browser.get(this.url);
-  this.browser.onLoaded(function() {
+  this.browser.visit(this.url);
+  this.browser.onceLoaded(function() {
     this.emit('pageLoaded');
   }.bind(this));
 };

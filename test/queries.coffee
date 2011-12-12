@@ -91,6 +91,7 @@ feature 'Queries', ->
       after (done) -> $(link: 'home').click(done)
       
       it "follows it", ->
+        browser.url.should.equal 'http://localhost:4567/subpage'
         $('h1').text.should.equal 'subpage'
     
     describe "when a submit button is clicked", ->
