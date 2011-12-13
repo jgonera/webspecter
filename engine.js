@@ -5,12 +5,14 @@ var Feature = require('./feature').Feature;
 
 var mocha = require('./mocha');
 var Reporter = require('./mocha/lib/reporters/spec');
+var ui = require('./interface');
+
 
 var Engine = exports.Engine = function Engine(options) {
   this.options = options;
   this.rootSuite = new mocha.Suite('');
   this.rootSuite.timeout(5000);
-  var ui = mocha.interfaces['bdd'];
+  //var ui = mocha.interfaces['bdd'];
   ui(this.rootSuite);
   this.featureManager = new FeatureManager(this.rootSuite);
 
@@ -41,8 +43,7 @@ Engine.prototype.run = function() {
   runner.on('test', function(test) {
     // a hack to show the test body as a stack trace on errors
     test.fn._isTest = true;
-    global.feature.currentTestTitle = test.title
-    global.feature.currentTestFullTitle = test.fullTitle();
+    global.feature.currentTest = test;
   });
   var reporter = new Reporter(runner);
   

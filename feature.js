@@ -62,13 +62,6 @@ FeatureManager.prototype.loadFeatures = function(featureMatch) {
   // load the features
   this.pending.forEach(function(title) {
     var feature = this.features[title];
-    
-    if (prevFeature) {
-      // add page to the chain-loading
-      prevFeature.once('pageLoaded', feature.loadPage.bind(feature));
-    } else {
-      feature.loadPage();
-    }
     feature.load(this.rootSuite);
     this.loaded.unshift(title);
     prevFeature = feature;
@@ -95,21 +88,13 @@ Feature.prototype.load = function(rootSuite) {
   rootSuite.addSuite(this.suite);
   var self = this;
   this.suite.emit('pre-require', global);
-  this.suite.beforeAll(function(done) {
+  this.suite.beforeAll(function() {
     global.browser = self.browser;
     global.$ = self.browser.query.bind(self.browser);
     global.wait = self.wait;
-    browser.onceLoaded(done);
   });
   
   this.fn();
   this.suite.emit('post-require', global);  
-};
-
-Feature.prototype.loadPage = function() {
-  this.browser.visit(this.url);
-  this.browser.onceLoaded(function() {
-    this.emit('pageLoaded');
-  }.bind(this));
 };
 

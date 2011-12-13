@@ -53,9 +53,7 @@ describe 'Feature', ->
       feature.load(rootSuite)
       emitted.should.equal true
     
-    it "adds a beforeAll block", (done) ->
-      suite.on 'beforeAll done', done
-      feature.loadPage()
+    it "adds a beforeAll block", ->
       feature.load(rootSuite)
       global.browser.should.equal feature.browser
       global.$.should.be.an.instanceOf Function
@@ -70,17 +68,6 @@ describe 'Feature', ->
       suite.on 'post-require', -> emitted = true
       feature.load(rootSuite)
       emitted.should.equal true
-  
-  describe '#loadPage', ->
-    it 'emits pageLoaded', (done) ->
-      feature.once 'pageLoaded', done
-      feature.loadPage()
-      
-    it 'loads the page', (done) ->
-      feature.loadPage()
-      feature.once 'pageLoaded', ->
-        feature.browser.url.should.equal 'http://localhost:4567/'
-        done()
       
 
 describe 'FeatureManager', ->
@@ -108,21 +95,6 @@ describe 'FeatureManager', ->
         error.should.equal true
   
   describe '#loadFeatures', ->
-    it 'chains #loadPage of all the features', (done) ->
-      feature1 = new DummyFeature(title: 'f1', delay: 10)
-      feature2 = new DummyFeature(dependencies: ['f1'])
-      featureManager.addFeature feature1
-      featureManager.addFeature feature2
-      featureManager.loadFeatures()
-      feature1.loadPageCalls.length.should.equal 1
-      feature2.loadPageCalls.length.should.equal 0
-      feature1.on 'pageLoaded', ->
-        try
-          feature2.loadPageCalls.length.should.equal 1
-          done()
-        catch e
-          done(e)
-    
     it "doesn't throw an exception when there are no features", ->
       featureManager.loadFeatures()
     

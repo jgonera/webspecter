@@ -1,4 +1,6 @@
 feature 'Wait', ->
+  before (done) -> browser.visit '/', done  
+  
   describe "#untilExists", ->
     before (done) ->
       $('#delayAddButton').click()
