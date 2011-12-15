@@ -4,5 +4,5 @@ SOURCE="$0"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-/usr/bin/env phantomjs $DIR/../webspecter.js "$@"
+/usr/bin/env phantomjs --disk-cache=yes $DIR/../webspecter.js "$@"
 
