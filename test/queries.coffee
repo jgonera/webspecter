@@ -104,16 +104,16 @@ feature 'Queries', ->
   
   describe "when there are more elements", ->
     it "lets us access them with an index", ->
-      $('ol li')[0].text.should.include.string 'first'
-      $('ol li')[1].text.should.include.string 'second'
-      $('ol li')[2].text.should.include.string 'third'
+      $('ol li')[0].text.should.include 'first'
+      $('ol li')[1].text.should.include 'second'
+      $('ol li')[2].text.should.include 'third'
     
     it "lets us iterate them with a for loop", ->
-      element.text.should.include.string 'item' for element in $('ol li')
+      element.text.should.include 'item' for element in $('ol li')
     
     it "lets us iterate them with #each", ->
-      $('ol li').each (element) -> element.text.should.include.string 'item'
+      $('ol li').each (element) -> element.text.should.include 'item'
     
     it "lets us access the last element with #last", ->
-      $('ol li').last.text.should.include.string 'third'
+      $('ol li').last.text.should.include 'third'
   

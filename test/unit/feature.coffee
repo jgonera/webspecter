@@ -133,7 +133,7 @@ describe 'FeatureManager', ->
         featureManager.loadFeatures()
       catch e
         error = true
-        e.message.should.include.string 'circular'
+        e.message.should.include 'circular'
       finally
         error.should.equal true
     
@@ -144,7 +144,7 @@ describe 'FeatureManager', ->
         featureManager.loadFeatures()
       catch e
         error = true
-        e.message.should.include.string 'unmet'
+        e.message.should.include 'unmet'
       finally
         error.should.equal true
     
