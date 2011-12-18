@@ -29,6 +29,13 @@ QueryBase.prototype = {
     return this.length !== 0;
   },
   
+  get visible() {
+    return this._evaluate(function(element) {
+      var style = window.getComputedStyle(element, null);
+      return style.display !== 'none' && style.visibility !== 'hidden';
+    });
+  },
+  
   get text() {
     return this._evaluate(function(element) {
       return element.textContent;

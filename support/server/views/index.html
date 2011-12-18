@@ -1,5 +1,21 @@
 <h1>home</h1>
-<p id="info">no info</p>
+
+
+<section>
+  <h2>common</h2>
+  <p id="info">no info</p>
+  
+  <article>
+    <label for="infoText">info text:</label>
+    <input type="text" id="infoText" name="infoText" value="initial value">
+    <button id="setInfo">set info</button>
+  </article>
+  
+  <script>
+    $('#setInfo').click(function() { $('#info').text($('input[name=infoText]').val()); });
+  </script>
+</section>
+
 
 <section>
   <h2>mouse</h2>
@@ -8,15 +24,23 @@
   <span id="click">click</span>
   
   <a id="link" href="/subpage">subpage</a>
+  
+  <script>
+    $('#setInfo').click(function() { $('#info').text($('input[name=infoText]').val()); });
+    
+    function logEvent(e) {
+      $('#info').text(e.type + ' fired');
+    };
+    
+    $('#mousedown').mousedown(logEvent);
+    $('#mouseup').mouseup(logEvent);
+    $('#click').click(logEvent);
+  </script>
 </section>
+
 
 <section>
   <h2>forms</h2>
-  <article>
-    <label for="infoText">info text:</label>
-    <input type="text" id="infoText" name="infoText" value="initial value">
-    <button id="setInfo">set info</button>
-  </article>
   
   <article>
     <div>
@@ -37,6 +61,7 @@
   </form>
 </section>
 
+
 <section>
   <h2>enumerable</h2>
   <ol>
@@ -46,42 +71,55 @@
   </ol>
 </section>
 
+
 <section>
   <h2>async</h2>
   
   <button id="delayAddButton">add element with delay</button>
   <button id="delayRemoveButton">remove element with delay</button>
+  
+  <script>
+    $('#delayAddButton').click(function() {
+      var section = $(this).parent();
+      setTimeout(function() {
+        section.append('<p id="delayed">delayed element</p>');
+      }, 100);
+    });
+    $('#delayRemoveButton').click(function() {
+      setTimeout(function() {
+        $('#delayed').remove();
+      }, 100);
+    });
+  </script>
 </section>
+
+
+<section>
+  <h2>visibility</h2>
+  <div id="box"></div>
+  <button id="resetBoxButton">reset box</button>
+  <button id="displayNoneButton">display: none</button>
+  <button id="visibilityHiddenButton">visibility: hidden</button>
+  
+  <script>
+    $('#resetBoxButton').click(function() {
+      $('#box').css('display', 'block');
+      $('#box').css('visibility', 'visible');
+    });
+    $('#displayNoneButton').click(function() { $('#box').css('display', 'none'); });
+    $('#visibilityHiddenButton').click(function() { $('#box').css('visibility', 'hidden'); });
+  </script>
+</section>
+
 
 <section>
   <h2>cookies</h2>
   <button id="setCookie">set cookie</button>
   <button id="getCookie">get cookie</button>
+
+  <script>
+    $('#setCookie').click(function() { $.cookie('foo', 'bar'); });
+    $('#getCookie').click(function() { $('#info').text($.cookie('foo')); });
+  </script>
 </section>
 
-<script>
-  $('#setInfo').click(function() { $('#info').text($('input[name=infoText]').val()); });
-  
-  var logEvent = function(e) {
-    $('#info').text(e.type + ' fired');
-  };
-  
-  $('#mousedown').mousedown(logEvent);
-  $('#mouseup').mouseup(logEvent);
-  $('#click').click(logEvent);
-  
-  $('#delayAddButton').click(function() {
-    var section = $(this).parent();
-    setTimeout(function() {
-      section.append('<p id="delayed">delayed element</p>');
-    }, 100);
-  });
-  $('#delayRemoveButton').click(function() {
-    setTimeout(function() {
-      $('#delayed').remove();
-    }, 100);
-  });
-  
-  $('#setCookie').click(function() { $.cookie('foo', 'bar'); });
-  $('#getCookie').click(function() { $('#info').text($.cookie('foo')); });
-</script>

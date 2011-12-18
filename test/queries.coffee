@@ -39,6 +39,20 @@ feature 'Queries', ->
     it "is false if element not found", ->
       $('banana').exists.should.equal false
   
+  describe '#visible', ->
+    beforeEach -> $(button: 'reset box').click()
+    
+    it "is true when display is not none and visibility is not hidden", ->
+      $('#box').visible.should.equal true
+    
+    it "is false if display is none", ->
+      $(button: 'display: none').click()
+      $('#box').visible.should.equal false
+    
+    it "is false if visibility is hidden", ->
+      $(button: 'visibility: hidden').click()
+      $('#box').visible.should.equal false
+  
   describe '#text', ->
     it "equals element's text content", ->
       $('title').text.should.equal 'WebSpecter Test Server'
