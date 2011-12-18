@@ -40,7 +40,7 @@ feature 'Queries', ->
       $('banana').exists.should.equal false
   
   describe '#visible', ->
-    beforeEach -> $(button: 'reset box').click()
+    beforeEach -> $(button: 'reset visibility').click()
     
     it "is true when display is not none and visibility is not hidden", ->
       $('#box').visible.should.equal true
@@ -52,6 +52,13 @@ feature 'Queries', ->
     it "is false if visibility is hidden", ->
       $(button: 'visibility: hidden').click()
       $('#box').visible.should.equal false
+    
+    it "is false when parent is not visible", ->
+      $(button: 'parent display: none').click()
+      $('#box').visible.should.equal false
+    
+    it "has an is# function equivalent", ->
+      $('#box').is.visible().should.equal true
   
   describe '#text', ->
     it "equals element's text content", ->
@@ -67,6 +74,9 @@ feature 'Queries', ->
     
     it "equals false if checkbox is unchecked", ->
       $('#uncheckedCheckbox').checked.should.equal false
+      
+    it "has an is# function equivalent", ->
+      $('#checkedCheckbox').is.checked().should.equal true
 
   describe '#attr', ->
     it "returns element's attribute", ->

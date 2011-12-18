@@ -73,7 +73,7 @@
 
 
 <section>
-  <h2>async</h2>
+  <h2>wait</h2>
   
   <button id="delayAddButton">add element with delay</button>
   <button id="delayRemoveButton">remove element with delay</button>
@@ -96,18 +96,23 @@
 
 <section>
   <h2>visibility</h2>
-  <div id="box"></div>
-  <button id="resetBoxButton">reset box</button>
+  <div id="boxParent">
+    <div id="box"></div>
+  </div>
+  <button id="resetBoxButton">reset visibility</button>
   <button id="displayNoneButton">display: none</button>
   <button id="visibilityHiddenButton">visibility: hidden</button>
+  <button id="parentDisplayNoneButton">parent display: none</button>
   
   <script>
     $('#resetBoxButton').click(function() {
       $('#box').css('display', 'block');
       $('#box').css('visibility', 'visible');
+      $('#boxParent').css('display', 'block')
     });
     $('#displayNoneButton').click(function() { $('#box').css('display', 'none'); });
     $('#visibilityHiddenButton').click(function() { $('#box').css('visibility', 'hidden'); });
+    $('#parentDisplayNoneButton').click(function() { $('#boxParent').css('display', 'none'); });
   </script>
 </section>
 

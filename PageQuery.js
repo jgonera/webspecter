@@ -31,8 +31,15 @@ QueryBase.prototype = {
   
   get visible() {
     return this._evaluate(function(element) {
-      var style = window.getComputedStyle(element, null);
-      return style.display !== 'none' && style.visibility !== 'hidden';
+      var el = element;
+      while (el) {
+        var style = window.getComputedStyle(el, null);
+        if (style.display === 'none' || style.visibility === 'hidden') {
+          return false;
+        }
+        el = el.parentElement;
+      }
+      return true;
     });
   },
   
@@ -46,6 +53,17 @@ QueryBase.prototype = {
     return this._evaluate(function(element) {
       return element.value;
     });
+  },
+  
+  get is() {
+    var self = this;
+    var is = {};
+    ['visible', 'checked'].forEach(function(property) {
+      is[property] = function() {
+        return self[property];
+      };
+    });
+    return is;
   },
   
   get checked() {
