@@ -1,3 +1,7 @@
+[submodule "nodify"]
+path = nodify
+url = git://github.com/jgonera/phantomjs-nodify.git
+
 [submodule "mocha"]
 path = mocha
 url = git://github.com/visionmedia/mocha.git
@@ -6,7 +10,7 @@ url = git://github.com/visionmedia/mocha.git
 path = should
 url = git://github.com/jgonera/should.js.git
 
-[submodule "nodify"]
-path = nodify
-url = git://github.com/jgonera/phantomjs-nodify.git
+[submodule "commander"]
+path = commander
+url = git://github.com/visionmedia/commander.js.git
 
