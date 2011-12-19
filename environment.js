@@ -1,13 +1,15 @@
-var utils = require('./utils');
+var extend = require('./utils').extend;
 
 exports.config = {};
 exports.global = {};
+exports.selectors = {};
 
 exports.load = function(path) {
   if (path) {
     var env = require(path);
-    utils.extend(env.config, { baseUrl: '' });
-    utils.extend(exports.config, env.config);
-    utils.extend(exports.global, env.global);
+    extend(env.config, { baseUrl: '' });
+    extend(exports.config, env.config);
+    extend(exports.global, env.global);
+    extend(exports.selectors, env.selectors);
   }
 };

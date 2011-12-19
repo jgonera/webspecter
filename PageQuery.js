@@ -2,6 +2,7 @@ var util = require('util');
 var utils = require('./utils');
 var injectArgs = utils.injectArgs;
 var extend = utils.extend;
+var env = require('./environment');
 
 
 var QueryBase = function() {};
@@ -139,6 +140,7 @@ QueryBase.prototype = {
 
 
 var PageQuery = module.exports = function PageQuery(browser, query) {
+  extend(this._selectors, env.selectors);
   this._browser = browser;
   this._queryObj = query;
   this._parseQuery();
@@ -157,6 +159,27 @@ var PageQuery = module.exports = function PageQuery(browser, query) {
 
 PageQuery.prototype = new QueryBase;
 
+PageQuery.prototype._selectors = {
+  text: function(query) {
+    return { xpath: '//*[text()="' + query + '"]' };
+  },
+  link: function(query) {
+    return { xpath: '//a[text()="' + query + '"]' };
+  },
+  field: function(query) {
+    var labelXpath = '//label[normalize-space(text())="' + query +
+      '" or substring-before(normalize-space(text()), ":")="' + query + '"]';
+    var forXpath = '//*[@id=' + labelXpath + '/@for]';
+    var childXpath = labelXpath + '/*';
+    return { xpath: forXpath + '|' + childXpath };
+  },
+  button: function(query) {
+    var buttonXpath = '//button[text()="' + query + '"]';
+    var inputXpath = '//input[contains("button,submit,image,reset", @type) and @value="' + query + '"]';
+    return { xpath: buttonXpath + '|' + inputXpath };
+  }
+};
+
 PageQuery.prototype._parseQuery = function() {
   var query = this._queryObj;
   if (typeof query === 'string') {
@@ -165,26 +188,15 @@ PageQuery.prototype._parseQuery = function() {
   } else if (query.xpath) {
     this._query = query.xpath;
     this._type = 'xpath';
-  } else if (query.text) {
-    this._query = '//*[text()="' + query.text + '"]';
-    this._type = 'xpath';
-  } else if (query.link) {
-    this._query = '//a[text()="' + query.link + '"]';
-    this._type = 'xpath';
-  } else if (query.field) {
-    var labelXpath = '//label[normalize-space(text())="' + query.field +
-      '" or substring-before(normalize-space(text()), ":")="' + query.field + '"]';
-    var forXpath = '//*[@id=' + labelXpath + '/@for]';
-    var childXpath = labelXpath + '/*';
-    this._query =  forXpath + '|' + childXpath;
-    this._type = 'xpath';
-  } else if (query.button) {
-    var buttonXpath = '//button[text()="' + query.button + '"]';
-    var inputXpath = '//input[contains("button,submit,image,reset", @type) and @value="' + query.button + '"]';
-    this._query =  buttonXpath + '|' + inputXpath;
-    this._type = 'xpath';
   } else {
-    throw new Error('Invalid query "' + util.inspect(query) + '"');
+    var selector;
+    for (selector in query) break;
+    if (selector in this._selectors) {
+      this._queryObj = this._selectors[selector](query[selector]);
+      this._parseQuery();
+    } else {
+      throw new Error('Invalid query "' + util.inspect(query) + '"');
+    }
   }
 };
 
