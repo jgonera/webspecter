@@ -1,7 +1,7 @@
 feature 'Environment functionality', ->
   before (done) -> browser.visit '/', done  
   
-  it 'extends the globals', ->
+  it 'extends global with helpers', ->
     pageTitle().should.equal 'WebSpecter Test Server'
     quack().should.equal 'quack quack'
   

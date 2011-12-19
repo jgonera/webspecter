@@ -4,7 +4,7 @@ exports.config =
 exports.selectors =
   tea: (query) -> xpath: "//*[text()='#{query} tea']"
 
-exports.global =
+exports.helpers =
   pageTitle: -> $('title').text
   quack: -> 'quack quack'
   $: -> 'evil! global overwritten!'

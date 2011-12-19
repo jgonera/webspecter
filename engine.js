@@ -4,6 +4,7 @@ var FeatureManager = require('./feature').FeatureManager;
 var Feature = require('./feature').Feature;  
 
 var mocha = require('./mocha');
+var ReporterBase = require('./mocha/lib/reporters/base');
 var Reporter = require('./mocha/lib/reporters/spec');
 var ui = require('./interface');
 
@@ -12,6 +13,7 @@ var Engine = exports.Engine = function Engine(options) {
   this.options = options;
   this.rootSuite = new mocha.Suite('');
   this.rootSuite.timeout(5000);
+  ReporterBase.slow = 1000;
   //var ui = mocha.interfaces['bdd'];
   ui(this.rootSuite);
   this.featureManager = new FeatureManager(this.rootSuite);
@@ -25,7 +27,7 @@ var Engine = exports.Engine = function Engine(options) {
   }.bind(this);
   
   environment.load(utils.findEnvFile(options.path));
-  utils.extend(global, environment.global);
+  utils.extend(global, environment.helpers);
 };
 
 Engine.prototype.run = function() {
