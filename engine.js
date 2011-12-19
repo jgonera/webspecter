@@ -3,9 +3,9 @@ var environment = require('./environment');
 var FeatureManager = require('./feature').FeatureManager;
 var Feature = require('./feature').Feature;  
 
-var mocha = require('./mocha');
-var ReporterBase = require('./mocha/lib/reporters/base');
-var Reporter = require('./mocha/lib/reporters/spec');
+var mocha = require('mocha');
+var ReporterBase = require('mocha/lib/reporters/base');
+var Reporter = require('mocha/lib/reporters/spec');
 var ui = require('./interface');
 
 
@@ -19,7 +19,7 @@ var Engine = exports.Engine = function Engine(options) {
   this.featureManager = new FeatureManager(this.rootSuite);
 
   global.assert = require('assert');
-  global.should = require('./should');
+  global.should = require('should');
   global.feature = function(title, options, fn) {
     var suite = new mocha.Suite(title);
     ui(suite);

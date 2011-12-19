@@ -1,4 +1,4 @@
-var mocha = require('./mocha');
+var mocha = require('mocha');
 var Suite = mocha.Suite
   , Test = mocha.Test;
 

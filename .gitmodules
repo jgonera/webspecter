@@ -1,16 +1,15 @@
+[submodule "node_modules/mocha"]
+	path = node_modules/mocha
+	url = git://github.com/visionmedia/mocha.git
+[submodule "node_modules/should"]
+	path = node_modules/should
+	url = git@github.com:jgonera/should.js.git
+[submodule "node_modules/commander"]
+	path = node_modules/commander
+	url = git://github.com/visionmedia/commander.js.git
 [submodule "nodify"]
-path = nodify
-url = git://github.com/jgonera/phantomjs-nodify.git
-
-[submodule "mocha"]
-path = mocha
-url = git://github.com/visionmedia/mocha.git
-
-[submodule "should"]
-path = should
-url = git://github.com/jgonera/should.js.git
-
-[submodule "commander"]
-path = commander
-url = git://github.com/visionmedia/commander.js.git
-
+	path = nodify
+	url = git@github.com:jgonera/phantomjs-nodify.git
+[submodule "node_modules/debug"]
+	path = node_modules/debug
+	url = git://github.com/visionmedia/debug.git

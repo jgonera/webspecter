@@ -8,7 +8,7 @@ nodify.run(function() {
   require('./patches');
   var utils = require('./utils');
   var Engine = require('./engine').Engine;
-  var program = require('./commander');
+  var program = require('commander');
   
   program.name = 'webspecter';
   program
