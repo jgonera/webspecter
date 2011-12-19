@@ -2,7 +2,7 @@ exports.config =
   baseUrl: 'http://localhost:4567'
   
 exports.selectors =
-  tea: (query) -> { xpath: "//*[text()='#{query} tea']" }
+  tea: (query) -> xpath: "//*[text()='#{query} tea']"
 
 exports.global =
   pageTitle: -> $('title').text
