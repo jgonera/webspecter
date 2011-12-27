@@ -1,4 +1,4 @@
-feature 'Wait', ->
+feature 'Wait', (context, browser, $) ->
   before (done) -> browser.visit '/', done  
   
   describe "#untilExists", ->

@@ -1,4 +1,4 @@
-feature 'Environment functionality', ->
+feature 'Environment functionality', (context, browser, $) ->
   before (done) -> browser.visit '/', done  
   
   it 'extends global with helpers', ->
@@ -13,7 +13,7 @@ feature 'Environment functionality', ->
       $('h1').text.should.equal 'subpage'
       done()
 
-feature 'Non-environment functionality', ->
+feature 'Non-environment functionality', (context, browser, $) ->
   before (done) -> browser.visit 'http://localhost:4567', done
 
   it 'loads the url beginning with a protocol without using baseUrl', ->

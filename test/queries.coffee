@@ -1,4 +1,4 @@
-feature 'Queries', ->
+feature 'Queries', (context, browser, $) ->
   before (done) -> browser.visit '/', done  
 #  i = 1
 #  afterEach -> browser.page.render "shots/#{i++} #{feature.currentTestFullTitle}.png"

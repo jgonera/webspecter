@@ -1,4 +1,4 @@
-feature 'Cookies', ->
+feature 'Cookies', (context, browser, $) ->
   before (done) -> browser.visit '/', done
   
   it 'sets and reads a cookie', ->
@@ -6,7 +6,7 @@ feature 'Cookies', ->
     $('#getCookie').click()
     $('#info').text.should.equal 'bar'
 
-feature 'Separate cookies per feature', dependsOn: ['Cookies'], ->
+feature 'Separate cookies per feature', dependsOn: ['Cookies'], (context, browser, $) ->
   before (done) -> browser.visit '/', done
   
   it "doesn't have a cookie from other feature", ->

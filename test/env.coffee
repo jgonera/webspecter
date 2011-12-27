@@ -5,6 +5,6 @@ exports.selectors =
   tea: (query) -> xpath: "//*[text()='#{query} tea']"
 
 exports.helpers =
-  pageTitle: -> $('title').text
+  pageTitle: -> @$('title').text
   quack: -> 'quack quack'
-  $: -> 'evil! global overwritten!'
+  $: -> 'evil! context overwritten!'
