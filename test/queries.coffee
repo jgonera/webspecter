@@ -33,11 +33,16 @@ feature 'Queries', (context, browser, $) ->
     $(button: 'set info').attr('id').should.equal 'setInfo'
     $(button: 'submit test').attr('id').should.equal 'submitButton'
   
-  describe '#exists', ->
+  describe '#present', ->
     it "is true if element found", ->
-      $('p').exists.should.equal true
+      $('p').present.should.equal true
+      
     it "is false if element not found", ->
-      $('banana').exists.should.equal false
+      $('banana').present.should.equal false
+    
+    it "has an is# function equivalent", ->
+      $('p').is.present().should.equal true
+      $('banana').is.present().should.equal false
   
   describe '#visible', ->
     beforeEach -> $(button: 'reset visibility').click()

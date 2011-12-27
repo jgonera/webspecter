@@ -1,6 +1,4 @@
-var Waiter = exports.Waiter = function Waiter(browser) {
-  this._browser = browser;
-};
+var Waiter = exports.Waiter = function Waiter() {};
 
 Waiter.prototype.until = function(conditionFn, fn) {
   var self = this;

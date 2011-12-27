@@ -26,7 +26,7 @@ QueryBase.prototype = {
     }));
   },
   
-  get exists() {
+  get present() {
     return this.length !== 0;
   },
   
@@ -58,7 +58,13 @@ QueryBase.prototype = {
   
   get is() {
     var self = this;
-    var is = {};
+    var is = {
+      // requery for `present` instead of using the current query
+      present: function() {
+        return new PageQuery(self._browser, self._queryObj).present;
+      }
+    };
+    
     ['visible', 'checked'].forEach(function(property) {
       is[property] = function() {
         return self[property];
@@ -230,7 +236,7 @@ PageQuery.prototype._nullifyProperties = function() {
   };
   var nullProperties = {};
   for (var key in this) {
-    if (key[0] !== '_' && key !== 'length' && key !== 'exists') {
+    if (key[0] !== '_' && key !== 'length' && key !== 'present' && key !== 'is') {
       nullProperties[key] = { get: throwNotFound };
     }
   }

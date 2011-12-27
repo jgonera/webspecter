@@ -52,12 +52,6 @@ describe 'Feature', ->
       suite.on 'pre-require', -> emitted = true
       feature.load(rootSuite)
       emitted.should.equal true
-    
-    it "adds a beforeAll block", ->
-      feature.load(rootSuite)
-      global.browser.should.equal feature.browser
-      global.$.should.be.an.instanceOf Function
-      global.wait.should.equal feature.wait
       
     it "runs the feature description function", ->
       feature.load(rootSuite)

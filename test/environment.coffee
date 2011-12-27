@@ -1,9 +1,10 @@
 feature 'Environment functionality', (context, browser, $) ->
   before (done) -> browser.visit '/', done  
   
-  it 'extends global with helpers', ->
-    pageTitle().should.equal 'WebSpecter Test Server'
-    quack().should.equal 'quack quack'
+  it 'extends the context with helpers', ->
+    context.pageTitle().should.equal 'WebSpecter Test Server'
+    context.quack().should.equal 'quack quack'
+    context.$.should.not.equal 'evil! context overwritten!'
   
   it "extends selectors", ->
     $(tea: 'black').text.should.equal 'black tea'

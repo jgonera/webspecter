@@ -1,4 +1,5 @@
 feature "Context", ->
+  before (done) => @browser.visit '/', done
+
   it "works", =>
-    @browser.visit '/'
     @$('title').text.should.equal 'WebSpecter Test Server'

@@ -1,6 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 var Browser = require('./Browser');
-var Waiter = require('./waiter').Waiter;
+var helpers = require('./environment').helpers;
 
 
 var FeatureManager = exports.FeatureManager = function FeatureManager(rootSuite) {
@@ -78,23 +78,23 @@ var Feature = exports.Feature = function Feature(suite, options, fn) {
   this.url = options.url || '';
   this.dependencies = options.dependsOn || [];
   this.fn = fn;
-  this.browser = new Browser;
-  this.wait = new Waiter(this.browser);
+  this.context = new Context;
 };
 
 Feature.prototype = new EventEmitter;
 
 Feature.prototype.load = function(rootSuite) {
   rootSuite.addSuite(this.suite);
-  var self = this;
   this.suite.emit('pre-require', global);
-  this.suite.beforeAll(function() {
-    global.browser = self.browser;
-    global.$ = self.browser.query.bind(self.browser);
-    global.wait = self.wait;
-  });
-  
-  this.fn();
+  this.fn.call(this.context, this.context, this.context.browser, this.context.$);
   this.suite.emit('post-require', global);  
 };
+
+
+function Context() {
+  this.browser = new Browser;
+  this.$ = this.browser.query.bind(this.browser);
+};
+
+Context.prototype = helpers;
 

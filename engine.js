@@ -1,7 +1,8 @@
 var utils = require('./utils');
 var environment = require('./environment');
 var FeatureManager = require('./feature').FeatureManager;
-var Feature = require('./feature').Feature;  
+var Feature = require('./feature').Feature;
+var Waiter = require('./waiter').Waiter;
 
 var mocha = require('mocha');
 var ReporterBase = require('mocha/lib/reporters/base');
@@ -20,6 +21,7 @@ var Engine = exports.Engine = function Engine(options) {
 
   global.assert = require('assert');
   global.should = require('should');
+  global.wait = new Waiter;
   global.feature = function(title, options, fn) {
     var suite = new mocha.Suite(title);
     ui(suite);
