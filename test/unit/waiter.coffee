@@ -70,32 +70,4 @@ describe 'Waiter', ->
         catch e
           done(e)
       ), 100
-    
-  describe '#untilExists', ->
-    it "waits until the query returns some elements", (done) ->
-      run = false
-      dummyBrowser.exists['tag'] = false
-      setTimeout (-> dummyBrowser.exists['tag'] = true), 50
-      wait.untilExists 'tag', -> run = true
-      setTimeout (->
-        try
-          run.should.equal true
-          done()
-        catch e
-          done(e)
-      ), 100
-  
-  describe '#whileExists', ->
-    it "waits until the query doesn't return any elements", (done) ->
-      run = false
-      dummyBrowser.exists['tag'] = true
-      setTimeout (-> dummyBrowser.exists['tag'] = false), 50
-      wait.whileExists 'tag', -> run = true
-      setTimeout (->
-        try
-          run.should.equal true
-          done()
-        catch e
-          done(e)
-      ), 100
       

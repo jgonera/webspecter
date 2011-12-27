@@ -22,16 +22,3 @@ Waiter.prototype['while'] = function(conditionFn, fn) {
   }
 };
 
-Waiter.prototype.untilExists = function(query, fn) {
-  var self = this;
-  this.until(function() {
-    return self._browser.query(query).exists;
-  }, fn);
-};
-
-Waiter.prototype.whileExists = function(query, fn) {
-  var self = this;
-  this['while'](function() {
-    return self._browser.query(query).exists;
-  }, fn);
-};
