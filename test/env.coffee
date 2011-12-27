@@ -7,4 +7,5 @@ exports.selectors =
 exports.helpers =
   pageTitle: -> @$('title').text
   quack: -> 'quack quack'
+  delayedPresent: -> @$('#delayed').present
   $: -> 'evil! context overwritten!'

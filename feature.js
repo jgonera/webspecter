@@ -94,7 +94,13 @@ Feature.prototype.load = function(rootSuite) {
 function Context() {
   this.browser = new Browser;
   this.$ = this.browser.query.bind(this.browser);
+  for (var helper in helpers) {
+    if (helper in this) continue;
+    if (helpers[helper] instanceof Function) {
+      this[helper] = helpers[helper].bind(this);
+    } else {
+      this[helper] = helpers[helper];
+    }
+  }
 };
-
-Context.prototype = helpers;
 

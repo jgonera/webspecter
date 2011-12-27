@@ -29,7 +29,6 @@ var Engine = exports.Engine = function Engine(options) {
   }.bind(this);
   
   environment.load(utils.findEnvFile(options.path));
-  utils.extend(global, environment.helpers);
 };
 
 Engine.prototype.run = function() {

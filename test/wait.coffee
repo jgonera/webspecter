@@ -9,6 +9,6 @@ feature 'Wait', (context, browser, $) ->
   
   it "waits while an element is present", (done) ->
     $('#delayRemoveButton').click()
-    wait.while $('#delayed').is.present, ->
+    wait.while context.delayedPresent, ->
       $('#delayed').present.should.equal false
       done()
