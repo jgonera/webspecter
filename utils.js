@@ -11,7 +11,7 @@ var dirname = exports.dirname = function(path) {
 var findFiles = exports.findFiles = function(path) {
   var i, entry, list, files = [];
   if (fs.isFile(path)) {
-    return [path];
+    return [fs.absolute(path)];
   }
   list = fs.list(path);
   for (i=0; i<list.length; ++i) {
