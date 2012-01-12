@@ -35,7 +35,8 @@ var Browser = module.exports = function Browser() {
       return document.location.href;
     });
     if (status !== 'success') {
-      self.error = new Error("Unable to load " + self.initialUrl);
+      // TODO: self.url is not the last URL if the last page is not loaded
+      self.error = new Error("Unable to load " + self.url);
     } else {
       self.error = null;
     }

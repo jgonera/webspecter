@@ -232,7 +232,7 @@ PageQuery.prototype._evaluateQuery = function() {
 
 PageQuery.prototype._nullifyProperties = function() {
   var throwNotFound = function() {
-    throw new Error('No element found for "' + util.inspect(this._queryObj) + '"');
+    throw new Error('No element found for ' + util.inspect(this._queryObj) + ' in\n' + this._page.content);
   };
   var nullProperties = {};
   for (var key in this) {

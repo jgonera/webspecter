@@ -84,8 +84,27 @@ var Feature = exports.Feature = function Feature(suite, options, fn) {
 Feature.prototype = new EventEmitter;
 
 Feature.prototype.load = function(rootSuite) {
+  var self = this;
   rootSuite.addSuite(this.suite);
   this.suite.emit('pre-require', global);
+  // TODO: this is a lame start for preloading
+  /*var oldBefore = global.before;
+  global.before = function(fn) {
+    //console.log("preloading for " + self.title);
+    var go = false;
+    fn(function() {
+      go = true;
+      //console.log("finished for " + self.title);
+    });
+    oldBefore(function(done) {
+      function check() {
+        if (go === true) done();
+        else setTimeout(check, 0);
+      };
+      check();
+    });
+    global.before = oldBefore;
+  };*/
   this.fn.call(this.context, this.context, this.context.browser, this.context.$);
   this.suite.emit('post-require', global);  
 };
