@@ -42,7 +42,7 @@ exports.findEnvFile = function(path) {
 };
 
 exports.getPath = function(path) {
-  path = path || './test';
+  path = path || './spec';
   if (path[0] !== '/' && path[0] !== '.') path = './' + path;
   return path;
 };
