@@ -15,6 +15,9 @@ util.inherits(PageError, Error);
 var Browser = module.exports = function Browser() {
   var self = this;
   this.page = require('webpage').create();
+  // custom inspect() to avoid getting stuck in inspect() from util
+  // (Object.keys seems to cause an infinite loop/recursion)
+  this.page.inspect = function() { return '[PhantomJS WebPage]'; };
   this.loaded = false;
   this.error = null;
   this.url = null;
@@ -53,8 +56,8 @@ Browser.prototype.visit = function(url, callback) {
   } else {
     this.initialUrl = config.baseUrl + url;
   }
+  if (callback) this.once('loadFinished', callback);
   this.page.open(encodeURI(this.initialUrl));
-  if (callback) this.onceLoaded(callback);
 };
 
 Browser.prototype.query = function(query) {
