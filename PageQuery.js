@@ -90,7 +90,7 @@ QueryBase.prototype = {
       element.value = $value;
     }));
   },
-  
+
   check: function() {
     this._evaluate(function(element) {
       element.checked = true;
@@ -102,7 +102,18 @@ QueryBase.prototype = {
       element.checked = false;
     });
   },
-  
+
+  select: function(option) {
+    this._evaluate(injectArgs({ option: option }, function(element) {
+      for (var i=0; i < element.options.length; ++i) {
+        if (element.options[i].textContent === $option) {
+          element.selectedIndex = i;
+          break;
+        }
+      }
+    }));
+  },
+
   mouse: function(options) {
     extend(options, {
       type: 'click',

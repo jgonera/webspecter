@@ -102,6 +102,11 @@ feature 'Queries', (context, browser, $) ->
     it "unchecks the checkbox", ->
       $(field: 'checked checkbox').uncheck()
       $(field: 'checked checkbox').checked.should.equal false
+
+  describe "#select", ->
+    it "selects an option", ->
+      $(field: 'select').select('Two')
+      $(field: 'select').value.should.equal '2'
   
   describe '#click', ->
     it "fires a mousedown event", ->
