@@ -23,8 +23,13 @@ var Engine = exports.Engine = function Engine(options) {
   global.should = require('should');
   global.wait = new Waiter;
   global.feature = function(title, options, fn) {
+    if (!fn) {
+      fn = options;
+      options = {};
+    }
     var suite = new mocha.Suite(title, this.rootSuite.ctx);
     ui(suite);
+    options.__file = this.file;
     this.featureManager.addFeature(new Feature(suite, options, fn));
   }.bind(this);
   
@@ -36,6 +41,7 @@ Engine.prototype.run = function() {
 
   for (var i=0; i<files.length; ++i) {
     this.rootSuite.emit('pre-require', global);
+    this.file = files[i];
     require(files[i]);
     this.rootSuite.emit('post-require', global);
   }

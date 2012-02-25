@@ -1,12 +1,5 @@
 var fs = require('fs');
-
-var dirname = exports.dirname = function(path) {
-  path = path.replace(/\/[^\/]+\/?$/, '');
-  if (path === '') {
-    return '/';
-  }
-  return path;
-};
+var dirname = require('path').dirname;
 
 var findFiles = exports.findFiles = function(path) {
   var i, entry, list, files = [];

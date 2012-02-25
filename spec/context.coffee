@@ -5,7 +5,7 @@ feature "Context", ->
     @$('title').text.should.equal 'WebSpecter Test Server'
 
   describe "another context", =>
-    other = @new()
+    other = @newContext()
     before (done) => other.browser.visit '/subpage', done
 
     it "can be dynamically created", =>

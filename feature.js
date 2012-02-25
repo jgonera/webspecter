@@ -1,6 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var Browser = require('./Browser');
-var helpers = require('./environment').helpers;
+var environment = require('./environment');
+var dirname = require('path').dirname;
 
 
 var FeatureManager = exports.FeatureManager = function FeatureManager(rootSuite) {
@@ -69,22 +70,19 @@ FeatureManager.prototype.loadFeatures = function(featureMatch) {
 };
 
 var Feature = exports.Feature = function Feature(suite, options, fn) {
-  if (!fn) {
-    fn = options;
-    options = {};
-  }
   this.suite = suite;
   this.title = suite.title;
   this.url = options.url || '';
   this.dependencies = options.dependsOn || [];
   this.fn = fn;
-  this.context = new Context;
+  this.file = options.__file;
 };
 
 Feature.prototype = new EventEmitter;
 
 Feature.prototype.load = function(rootSuite) {
   var self = this;
+  var context = new Context(this.file);
   rootSuite.addSuite(this.suite);
   this.suite.emit('pre-require', global);
   // TODO: this is a lame start for preloading
@@ -105,14 +103,29 @@ Feature.prototype.load = function(rootSuite) {
     });
     global.before = oldBefore;
   };*/
-  this.fn.call(this.context, this.context, this.context.browser, this.context.$);
+  this.fn.call(context, context, context.browser, context.$);
   this.suite.emit('post-require', global);  
 };
 
 
-function Context() {
+function Context(file) {
+  this.__file = file;
   this.browser = new Browser;
   this.$ = this.browser.query.bind(this.browser);
+  this._includeHelpers(environment.helpers);
+  // load feature's own helpers only if file defined (to avoid errors in unit tests)
+  if (file) this._includeHelpers(require(file).helpers);
+};
+
+Context.prototype.newContext = function() {
+  return new Context(this.__file);
+};
+
+Context.prototype.include = function(path) {
+  this._includeHelpers(require(dirname(this.__file) + '/' + path).helpers);
+};
+
+Context.prototype._includeHelpers = function(helpers) {
   for (var helper in helpers) {
     if (helper in this) continue;
     if (helpers[helper] instanceof Function) {
@@ -122,8 +135,3 @@ function Context() {
     }
   }
 };
-
-Context.prototype['new'] = function() {
-  return new Context;
-};
-
