@@ -123,3 +123,7 @@ function Context() {
   }
 };
 
+Context.prototype['new'] = function() {
+  return new Context;
+};
+
