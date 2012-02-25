@@ -12,7 +12,7 @@ var ui = require('./interface');
 
 var Engine = exports.Engine = function Engine(options) {
   this.options = options;
-  this.rootSuite = new mocha.Suite('');
+  this.rootSuite = new mocha.Suite('', new mocha.Context);
   this.rootSuite.timeout(5000);
   ReporterBase.slow = 1000;
   //var ui = mocha.interfaces['bdd'];
@@ -23,7 +23,7 @@ var Engine = exports.Engine = function Engine(options) {
   global.should = require('should');
   global.wait = new Waiter;
   global.feature = function(title, options, fn) {
-    var suite = new mocha.Suite(title);
+    var suite = new mocha.Suite(title, this.rootSuite.ctx);
     ui(suite);
     this.featureManager.addFeature(new Feature(suite, options, fn));
   }.bind(this);
