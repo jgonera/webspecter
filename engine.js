@@ -2,7 +2,6 @@ var utils = require('./utils');
 var environment = require('./environment');
 var FeatureManager = require('./feature').FeatureManager;
 var Feature = require('./feature').Feature;
-var Waiter = require('./waiter').Waiter;
 
 var mocha = require('mocha');
 var ReporterBase = require('mocha/lib/reporters/base');
@@ -21,7 +20,8 @@ var Engine = exports.Engine = function Engine(options) {
 
   global.assert = require('assert');
   global.should = require('should');
-  global.wait = new Waiter;
+  global.wait = require('./wait');
+  global.parallelize = require('./parallelize');
   global.feature = function(title, options, fn) {
     if (!fn) {
       fn = options;

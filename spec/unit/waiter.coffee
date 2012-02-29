@@ -1,14 +1,6 @@
-{Waiter} = require '../../waiter'
+wait = require '../../wait'
 
-dummyBrowser =
-  exists: {}
-  query: (query) -> { exists: @exists[query] }
-
-
-describe 'Waiter', ->
-  wait = null
-  beforeEach -> wait = new Waiter(dummyBrowser)
-  
+describe 'wait', ->
   describe '#until', ->
     it "runs the second function when the first function returns true", ->
       run = false

@@ -1,5 +1,5 @@
 feature 'Wait', (context, browser, $) ->
-  before (done) -> browser.visit '/', done  
+  before (done) -> browser.visit '/', done
   
   it "waits until an element is present", (done) ->
     $('#delayAddButton').click()
