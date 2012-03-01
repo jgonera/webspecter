@@ -1,5 +1,5 @@
 feature 'Queries', (context, browser, $) ->
-  before (done) -> browser.visit '/', done  
+  before (done) -> browser.visit '/', done
 #  i = 1
 #  afterEach -> browser.page.render "shots/#{i++} #{feature.currentTestFullTitle}.png"
   
@@ -88,10 +88,15 @@ feature 'Queries', (context, browser, $) ->
       $('#link').attr('href').should.equal '/subpage'
   
   describe '#fill', ->
-    it "fills an input with text", ->
+    it "fills an input/textarea with text", ->
       $('input[name="infoText"]').fill 'input text'
       $(button: 'set info').click()
       $('#info').text.should.equal 'input text'
+
+  describe '#type', ->
+    it "types the text in input/textarea without deleting existing text", ->
+      $(field: "info text").type ' and something'
+      $(field: "info text").value.should.equal 'input text and something'
   
   describe '#check', ->
     it "checks the checkbox", ->

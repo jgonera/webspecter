@@ -91,6 +91,15 @@ QueryBase.prototype = {
     }));
   },
 
+  type: function(text) {
+    this._event({
+      eventType: 'TextEvent',
+      eventInit: injectArgs({ text: text }, function(e) {
+        e.initTextEvent('textInput', true, true, window, $text);
+      })
+    });
+  },
+
   check: function() {
     this._evaluate(function(element) {
       element.checked = true;
@@ -121,15 +130,13 @@ QueryBase.prototype = {
       button: 0
     });
     
-    var event = {
+    this._event({
       eventType: 'MouseEvents',
       eventInit: injectArgs(options, function(e) {
         e.initMouseEvent($type, true, true, window, $detail, 0, 0, 0, 0, false,
           false, false, false, $button, null);
       })
-    };
-
-    this._event(event);
+    });
   },
   
   click: function(button, callback) {
