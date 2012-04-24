@@ -123,6 +123,7 @@ Context.prototype.newContext = function() {
 
 Context.prototype.include = function(path) {
   this._includeHelpers(require(dirname(this.__file) + '/' + path).helpers);
+  return true;
 };
 
 Context.prototype._includeHelpers = function(helpers) {
