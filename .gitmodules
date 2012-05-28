@@ -13,3 +13,6 @@
 [submodule "node_modules/debug"]
 	path = node_modules/debug
 	url = git://github.com/visionmedia/debug.git
+[submodule "node_modules/diff"]
+	path = node_modules/diff
+	url = https://github.com/kpdecker/jsdiff.git

@@ -1,4 +1,4 @@
-wait = require '../../wait'
+wait = require '../../keywords/wait'
 
 describe 'wait', ->
   describe '#until', ->
