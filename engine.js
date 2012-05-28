@@ -6,15 +6,14 @@ var Feature = require('./feature').Feature;
 var mocha = require('mocha');
 var ReporterBase = require('mocha/lib/reporters/base');
 var Reporter = require('mocha/lib/reporters/spec');
-var ui = require('./interface');
 
 
 var Engine = exports.Engine = function Engine(options) {
   this.options = options;
   this.rootSuite = new mocha.Suite('', new mocha.Context);
-  this.rootSuite.timeout(5000);
+  this.rootSuite.timeout(10000);
   ReporterBase.slow = 1000;
-  //var ui = mocha.interfaces['bdd'];
+  var ui = mocha.interfaces['bdd'];
   ui(this.rootSuite);
   this.featureManager = new FeatureManager(this.rootSuite);
 
