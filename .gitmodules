@@ -1,9 +1,6 @@
 [submodule "node_modules/mocha"]
 	path = node_modules/mocha
 	url = git://github.com/visionmedia/mocha.git
-[submodule "node_modules/should"]
-	path = node_modules/should
-	url = git@github.com:jgonera/should.js.git
 [submodule "node_modules/commander"]
 	path = node_modules/commander
 	url = git://github.com/visionmedia/commander.js.git
@@ -16,3 +13,6 @@
 [submodule "node_modules/diff"]
 	path = node_modules/diff
 	url = https://github.com/kpdecker/jsdiff.git
+[submodule "node_modules/chai"]
+	path = node_modules/chai
+	url = https://github.com/chaijs/chai.git

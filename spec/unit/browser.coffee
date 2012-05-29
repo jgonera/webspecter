@@ -43,7 +43,7 @@ describe 'Browser', ->
     it 'returns a PageQuery object', ->
       browser.query('body').should.be.an.instanceOf PageQuery
   
-  describe '#onceLoaded', ->  
+  describe '#onceLoaded', ->
     it 'runs the callback after the page is loaded', (done) ->
       browser.onceLoaded done
       browser.visit 'http://localhost:4567'

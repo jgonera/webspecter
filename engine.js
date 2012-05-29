@@ -16,8 +16,9 @@ var Engine = exports.Engine = function Engine(options) {
   this.ui(this.rootSuite);
   this.featureManager = new FeatureManager(this.rootSuite);
 
-  global.assert = require('assert');
-  global.should = require('should');
+  global.assert = require('chai').assert;
+  global.should = require('chai').should();
+  global.expect = require('chai').expect;
   global.wait = require('./keywords/wait');
   global.parallelize = require('./keywords/parallelize');
   global.feature = require('./keywords/feature')(this);
