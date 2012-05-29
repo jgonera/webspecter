@@ -28,7 +28,7 @@ var Browser = module.exports = function Browser() {
  
   if (config.console) {
     this.page.onConsoleMessage = function(msg, line, fileName) {
-      console.error('%s:%d %s', fileName, line, msg);
+      console.error('[page] %s:%d %s', fileName, line, msg);
     };
   }
 
@@ -83,7 +83,7 @@ Browser.prototype.reloadInitial = function(callback) {
   this.visit(this.initialUrl, callback);
 };
 
-Browser.prototype.evaluate = function(args, fn) {
-  this.page.evaluate(injectArgs(args, fn));
+Browser.prototype.evaluate = function() {
+  return this.page.evaluate(injectArgs.apply(this, arguments));
 };
 

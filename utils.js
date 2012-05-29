@@ -40,38 +40,21 @@ exports.getPath = function(path) {
   return path;
 };
 
-exports.injectArgs = function(args, fn) {
-  var stringifyArgs = function(argsString) {
-    var splittedArgs = argsString.split(',');
-    for (var i=0; i<splittedArgs.length; ++i) {
-      splittedArgs[i] = JSON.stringify(splittedArgs[i].trim());
+exports.injectArgs = function() {
+  var str, arg, i, l = arguments.length - 1;
+  var func = arguments[l];
+
+  str = 'return (' + func.toString() + ')(';
+  for (i = 0; i < l; i++) {
+    arg = arguments[i];
+    if (/object|string/.test(typeof arg) && !(arg instanceof RegExp)) {
+      str += 'JSON.parse(' + JSON.stringify(JSON.stringify(arg)) + '),';
+    } else {
+      str += arg + ',';
     }
-    return splittedArgs.join(', ');
-  };
-  
-  var newFn, normalArgs, code = fn.toString();
-  
-  code = code.replace(/function .*\((.*?)\) {/, function(str, p1) {
-    var name, arg, newStr = "";
-    normalArgs = p1;
-    for (name in args) {
-      arg = args[name];
-      if (arg instanceof Function) {
-        newStr += "var $" + name + " = " + arg.toString() + ";\n";
-      } else {
-        newStr += "var $" + name + " = " + JSON.stringify(arg) + ";\n";
-      }
-    }
-    return newStr;
-  });
-  code = code.slice(0, -1);
-  if (normalArgs === '') {
-    newFn = new Function(code);
-  } else {
-    newFn = eval('new Function(' + stringifyArgs(normalArgs) + ', code)');
   }
-  //console.log(newFn.toString());
-  return newFn;
+  str = str.replace(/,$/, '') + ');';
+  return new Function(str);
 };
 
 exports.extend = function(object, source) {

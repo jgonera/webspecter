@@ -32,7 +32,35 @@ feature 'Queries', (context, browser, $) ->
   it "finds buttons by their caption", ->
     $(button: 'set info').attr('id').should.equal 'setInfo'
     $(button: 'submit test').attr('id').should.equal 'submitButton'
-  
+    
+  describe '#click', ->
+    it "fires a mousedown event", ->
+      $('#mousedown').click()
+      $('#info').text.should.equal 'mousedown fired'
+    
+    it "fires a mouseup event", ->
+      $('#mouseup').click()
+      $('#info').text.should.equal 'mouseup fired'
+    
+    it "fires a click event", ->
+      $('#click').click()
+      $('#info').text.should.equal 'click fired'
+    
+    describe "when a link is clicked", ->
+      before (done) -> $(link: 'subpage').click(done)
+      after (done) -> $(link: 'home').click(done)
+      
+      it "follows it", ->
+        browser.url.should.equal 'http://localhost:4567/subpage'
+        $('h1').text.should.equal 'subpage'
+    
+    describe "when a submit button is clicked", ->
+      before (done) -> $(button: 'submit test').click(done)
+      after (done) -> $(link: 'home').click(done)
+      
+      it "submits the form", ->
+        $('p')[0].text.should.equal 'input: test value'
+
   describe '#present', ->
     it "is true if element found", ->
       $('p').present.should.equal true
@@ -112,35 +140,7 @@ feature 'Queries', (context, browser, $) ->
     it "selects an option", ->
       $(field: 'select').select('Two')
       $(field: 'select').value.should.equal '2'
-  
-  describe '#click', ->
-    it "fires a mousedown event", ->
-      $('#mousedown').click()
-      $('#info').text.should.equal 'mousedown fired'
-    
-    it "fires a mouseup event", ->
-      $('#mouseup').click()
-      $('#info').text.should.equal 'mouseup fired'
-    
-    it "fires a click event", ->
-      $('#click').click()
-      $('#info').text.should.equal 'click fired'
-    
-    describe "when a link is clicked", ->
-      before (done) -> $(link: 'subpage').click(done)
-      after (done) -> $(link: 'home').click(done)
-      
-      it "follows it", ->
-        browser.url.should.equal 'http://localhost:4567/subpage'
-        $('h1').text.should.equal 'subpage'
-    
-    describe "when a submit button is clicked", ->
-      before (done) -> $(button: 'submit test').click(done)
-      after (done) -> $(link: 'home').click(done)
-      
-      it "submits the form", ->
-        $('p')[0].text.should.equal 'input: test value'
-  
+
   describe "when there are more elements", ->
     it "lets us access them with an index", ->
       $('ol li')[0].text.should.include 'first'

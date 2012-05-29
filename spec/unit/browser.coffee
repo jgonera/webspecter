@@ -105,6 +105,9 @@ describe 'Browser', ->
     it "evaluates the function in page context with supplied arguments", ->
       message = ''
       browser.page.onConsoleMessage = (msg) -> message = msg
-      browser.evaluate text: 'abc', -> console.log $text
+      browser.evaluate 'abc', (text) -> console.log text
       message.should.equal 'abc'
-        
+
+    it "returns the value", ->
+      result = browser.evaluate -> 'hello'
+      result.should.equal 'hello'

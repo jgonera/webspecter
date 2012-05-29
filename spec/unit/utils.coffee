@@ -3,29 +3,23 @@ utils = require '../../utils'
 describe 'utils', ->
   describe '#injectArgs', ->
     it 'injects primitive types', ->
-      fn = utils.injectArgs { aString: 'abc', aNumber: 23, aBool: true }, ->
-        return [$aString, $aNumber, $aBool]
+      fn = utils.injectArgs 'abc', 23, true, (aString, aNumber, aBool) ->
+        return [aString, aNumber, aBool]
       
       fn().should.eql ['abc', 23, true]
     
     it 'injects objects', ->
-      fn = utils.injectArgs { obj: { 1: 2, foo: 'bar' }, arr: [3, 4, 'baz'] }, ->
-        return [$obj, $arr]
+      fn = utils.injectArgs { 1: 2, foo: 'bar' }, [3, 4, 'baz'], (obj, arr) ->
+        return [obj, arr]
       
       fn().should.eql [ { 1: 2, foo: 'bar' }, [3, 4, 'baz'] ]
     
     it 'injects functions', ->
-      fn = utils.injectArgs { func: (name) -> 'hello ' + name }, ->
-        return $func('world')
+      fn = utils.injectArgs ((name) -> 'hello ' + name), (func) ->
+        return func('world')
       
       fn().should.equal 'hello world'
     
-    it "maintains function's normal arguments", ->
-      fn = utils.injectArgs { name: 'world' }, (greeting, times) ->
-        return (greeting + ' ' + $name for i in [0...times]).join(', ')
-      
-      fn('hello', 2).should.equal 'hello world, hello world'
-  
   describe '#extend', ->
     it 'extends object with source', ->
       object = { banana: 4, cake: 2 }

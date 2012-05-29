@@ -8,22 +8,21 @@ var env = require('./environment');
 var QueryBase = function() {};
 
 QueryBase.prototype = {
-  _evaluate: function(fn) {
-    return this._page.evaluate(injectArgs({
-      id: this._id, n: this._n, fn: fn
-    }, function() {
-      var element = window._webspecter[$id][$n];
-      
-      return $fn(element);
-    }));
-  },
+  _evaluate: function() {
+    var args = Array.prototype.slice.call(arguments);
 
-  _event: function(args) {
-    return this._evaluate(injectArgs(args, function(element) {
-      var e = document.createEvent($eventType);
-      $eventInit(e);
-      return element.dispatchEvent(e);
-    }));
+    function wrapper(id, n) {
+      var args = Array.prototype.slice.call(arguments, 2);
+      var fn = args.pop();
+      var element = window._webspecter[id][n];
+      args.unshift(element);
+      return fn.apply(this, args);
+    }
+
+    args.push(wrapper);
+    args.unshift(this._n);
+    args.unshift(this._id);
+    return this._browser.evaluate.apply(this._browser, args);
   },
   
   get present() {
@@ -80,23 +79,22 @@ QueryBase.prototype = {
   },
   
   attr: function(name) {
-    return this._evaluate(injectArgs({ name: name }, function(element) {
-      return element.getAttribute($name);
-    }));
+    return this._evaluate(name, function(element, name) {
+      return element.getAttribute(name);
+    });
   },
   
   fill: function(value) {
-    this._evaluate(injectArgs({ value: value }, function(element) {
-      element.value = $value;
-    }));
+    this._evaluate(value, function(element, value) {
+      element.value = value;
+    });
   },
 
   type: function(text) {
-    this._event({
-      eventType: 'TextEvent',
-      eventInit: injectArgs({ text: text }, function(e) {
-        e.initTextEvent('textInput', true, true, window, $text);
-      })
+    this._evaluate(text, function(element, text) {
+      var e = document.createEvent('TextEvent');
+      e.initTextEvent('textInput', true, true, window, text);
+      return element.dispatchEvent(e);
     });
   },
 
@@ -113,30 +111,32 @@ QueryBase.prototype = {
   },
 
   select: function(option) {
-    this._evaluate(injectArgs({ option: option }, function(element) {
+    this._evaluate(option, function(element, option) {
       for (var i=0; i < element.options.length; ++i) {
-        if (element.options[i].textContent === $option) {
+        if (element.options[i].textContent === option) {
           element.selectedIndex = i;
           break;
         }
       }
-    }));
+    });
   },
 
-  mouse: function(options) {
+  mouseEvent: function(options) {
     extend(options, {
       type: 'click',
       detail: 1,
       button: 0
     });
-    
-    this._event({
-      eventType: 'MouseEvents',
-      eventInit: injectArgs(options, function(e) {
-        e.initMouseEvent($type, true, true, window, $detail, 0, 0, 0, 0, false,
-          false, false, false, $button, null);
-      })
-    });
+
+    this._evaluate(
+      options.type, options.detail, options.button,
+      function(element, type, detail, button) {
+        var e = document.createEvent('MouseEvents');
+        e.initMouseEvent(type, true, true, window, detail, 0, 0, 0, 0, false,
+          false, false, false, button, null);
+        return element.dispatchEvent(e);
+      }
+    );
   },
   
   click: function(button, callback) {
@@ -150,9 +150,9 @@ QueryBase.prototype = {
     
     if (callback) this._browser.once('loadFinished', callback);
     
-    this.mouse({ type: 'mousedown', button: buttonCode });
-    this.mouse({ type: 'mouseup', button: buttonCode });
-    this.mouse({ type: 'click', button: buttonCode });
+    this.mouseEvent({ type: 'mousedown', button: buttonCode });
+    this.mouseEvent({ type: 'mouseup', button: buttonCode });
+    this.mouseEvent({ type: 'click', button: buttonCode });
   },
   
   each: function(fn) {
@@ -168,7 +168,6 @@ var PageQuery = module.exports = function PageQuery(browser, query) {
   this._browser = browser;
   this._queryObj = query;
   this._parseQuery();
-  this._page = browser.page;
   this._n = 0;
   this._id = this._query + new Date().getTime().toString() + Math.random().toString();
   
@@ -225,17 +224,15 @@ PageQuery.prototype._parseQuery = function() {
 };
 
 PageQuery.prototype._evaluateQuery = function() {
-  this.length = this._page.evaluate(injectArgs({
-    id: this._id, query: this._query, type: this._type
-  }, function() {
+  this.length = this._browser.evaluate(this._id, this._query, this._type, function(id, query, type) {
     window._webspecter = window._webspecter || {};
     var elements;
     
-    if ($type === 'css') {
-      elements = document.querySelectorAll($query);
-    } else if ($type === 'xpath') {
+    if (type === 'css') {
+      elements = document.querySelectorAll(query);
+    } else if (type === 'xpath') {
       elements = [];
-      var nodesSnapshot = document.evaluate($query,
+      var nodesSnapshot = document.evaluate(query,
         document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
       
       for (var i=0; i < nodesSnapshot.snapshotLength; ++i) {  
@@ -243,9 +240,9 @@ PageQuery.prototype._evaluateQuery = function() {
       }
     }
     
-    window._webspecter[$id] = elements;
+    window._webspecter[id] = elements;
     return elements.length;
-  }));
+  });
 };
 
 PageQuery.prototype._nullifyProperties = function() {
