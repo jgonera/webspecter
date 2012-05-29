@@ -247,7 +247,8 @@ PageQuery.prototype._evaluateQuery = function() {
 
 PageQuery.prototype._nullifyProperties = function() {
   var throwNotFound = function() {
-    throw new Error('No element found for ' + util.inspect(this._queryObj) + ' in\n' + this._page.content);
+    throw new Error('No element found for ' + util.inspect(this._queryObj) +
+                    ' in\n' + this._browser.page.content);
   };
   var nullProperties = {};
   for (var key in this) {
@@ -269,7 +270,6 @@ PageQuery.prototype._addSubqueries = function() {
 var SubQuery = function SubQuery(parent, n) {
   this._browser = parent._browser;
   this._query = parent._query;
-  this._page = this._browser.page;
   this._n = n || parent._n;
   this._id = parent._id;
 };
