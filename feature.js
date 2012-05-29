@@ -108,17 +108,20 @@ Feature.prototype.load = function(rootSuite) {
 };
 
 
-function Context(file) {
+function Context(file, name) {
+  name = name || 'Context ' + ++Context.n;
   this.__file = file;
-  this.browser = new Browser;
+  this.browser = new Browser(name);
   this.$ = this.browser.query.bind(this.browser);
   this._includeHelpers(environment.helpers);
   // load feature's own helpers only if file defined (to avoid errors in unit tests)
   if (file) this._includeHelpers(require(file).helpers);
 };
 
-Context.prototype.newContext = function() {
-  return new Context(this.__file);
+Context.n = 0;
+
+Context.prototype.newContext = function(name) {
+  return new Context(this.__file, name);
 };
 
 Context.prototype.include = function(path) {

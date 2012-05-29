@@ -13,7 +13,7 @@ var PageError = function(message, line, fileName) {
 };
 util.inherits(PageError, Error);
 
-var Browser = module.exports = function Browser() {
+var Browser = module.exports = function Browser(contextName) {
   var self = this;
   this.page = require('webpage').create();
   // custom inspect() to avoid getting stuck in inspect() from util
@@ -28,7 +28,7 @@ var Browser = module.exports = function Browser() {
  
   if (config.console) {
     this.page.onConsoleMessage = function(msg, line, fileName) {
-      console.error('[page] %s:%d %s', fileName, line, msg);
+      console.error('[' + contextName + '] %s:%d %s', fileName, line, msg);
     };
   }
 
