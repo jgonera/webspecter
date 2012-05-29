@@ -1,6 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var PageQuery = require('./PageQuery');
 var util = require('util');
+var injectArgs = require('./utils').injectArgs;
 var config = require('./environment').config;
 
 
@@ -80,5 +81,9 @@ Browser.prototype.reload = function(callback) {
 
 Browser.prototype.reloadInitial = function(callback) {
   this.visit(this.initialUrl, callback);
+};
+
+Browser.prototype.evaluate = function(args, fn) {
+  this.page.evaluate(injectArgs(args, fn));
 };
 

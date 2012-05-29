@@ -100,4 +100,11 @@ describe 'Browser', ->
         reloaded.should.equal true
         browser.url.should.equal 'http://localhost:4567/'
         done()
+
+  describe '#evaluate', ->
+    it "evaluates the function in page context with supplied arguments", ->
+      message = ''
+      browser.page.onConsoleMessage = (msg) -> message = msg
+      browser.evaluate text: 'abc', -> console.log $text
+      message.should.equal 'abc'
         
