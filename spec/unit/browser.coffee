@@ -9,6 +9,26 @@ describe 'Browser', ->
   
   beforeEach ->
     browser = new Browser
+
+  it "doesn't set onConsoleMessage if console option is disabled", ->
+    config.console = false
+    logged = false
+    oldConsoleError = console.error
+    console.error = -> logged = true
+    browser = new Browser
+    browser.page.evaluate -> console.log 'test'
+    console.error = oldConsoleError
+    logged.should.equal false
+
+  it "sets onConsoleMessage if console option is enabled", ->
+    config.console = true
+    logged = false
+    oldConsoleError = console.error
+    console.error = -> logged = true
+    browser = new Browser
+    browser.page.evaluate -> console.log 'test'
+    console.error = oldConsoleError
+    logged.should.equal true
   
   describe '#visit', ->
     it "loads the page", (done) ->

@@ -24,6 +24,7 @@ var Engine = exports.Engine = function Engine(options) {
   global.feature = require('./keywords/feature')(this);
   
   environment.load(utils.findEnvFile(options.path));
+  environment.config.console = options.console;
 };
 
 Engine.prototype.run = function() {

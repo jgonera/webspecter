@@ -24,10 +24,12 @@ var Browser = module.exports = function Browser() {
   this.initialUrl = null;
   
   this.page.viewportSize = { width: 1024, height: 768 };
-  
-  this.page.onConsoleMessage = function(msg, line, fileName) {
-    console.log('%s:%d %s', fileName, line, msg);
-  };
+ 
+  if (config.console) {
+    this.page.onConsoleMessage = function(msg, line, fileName) {
+      console.error('%s:%d %s', fileName, line, msg);
+    };
+  }
 
   this.page.onLoadStarted = function() {
     self.loaded = false;
