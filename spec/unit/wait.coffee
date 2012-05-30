@@ -31,7 +31,26 @@ describe 'wait', ->
         catch e
           done(e)
       ), 100
-  
+
+    it "throws an error after a specified timeout", (done) ->
+      run = false
+      tooEarly = true
+      oldListeners = process.listeners 'uncaughtException'
+      process.removeAllListeners()
+      process.on 'uncaughtException', (e) ->
+        process.removeAllListeners()
+        process.on 'uncaughtException', fn for fn in oldListeners
+        tooEarly.should.equal false
+        e.message.should.match(/^Timeout waiting until/)
+        done()
+      setTimeout (->
+        tooEarly = false
+      ), 30
+      wait.until (-> false), for: 50, -> run = true
+      setTimeout (->
+        run.should.equal false
+      ), 100
+
   describe '#while', ->
     it "runs the second function when the first function returns false", ->
       run = false
