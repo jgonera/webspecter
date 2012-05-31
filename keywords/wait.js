@@ -3,10 +3,10 @@ var extend = require('../utils').extend;
 var until = exports.until = exports['for'] = function(conditionFn, options, fn) {
   if (options instanceof Function) {
     fn = options;
-    options = { 'for': 5000 };
+    options = {};
   }
   extend(options, {
-    'for': 5000,
+    'for': 1000,
     message: conditionFn.message || conditionFn.toString()
   });
 
@@ -23,11 +23,8 @@ var until = exports.until = exports['for'] = function(conditionFn, options, fn) 
   }
 };
 
-var while_ = exports['while'] = function(conditionFn, fn) {
-  if (!conditionFn()) {
-    fn();
-  } else {
-    setTimeout(function() { while_(conditionFn, fn); }, 0);
-  }
+exports['while'] = function(conditionFn, options, fn) {
+  function negatedConditionFn() { return !conditionFn(); }
+  until(negatedConditionFn, options, fn);
 };
 
