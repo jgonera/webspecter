@@ -83,6 +83,13 @@ QueryBase.prototype = {
       return element.getAttribute(name);
     });
   },
+
+  style: function(name) {
+    return this._evaluate(name, function(element, name) {
+      var computedStyle = window.getComputedStyle(element, null);
+      return computedStyle[name];
+    });
+  },
   
   fill: function(value) {
     this._evaluate(value, function(element, value) {

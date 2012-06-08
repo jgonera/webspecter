@@ -114,6 +114,14 @@ feature 'Queries', (context, browser, $) ->
   describe '#attr', ->
     it "returns element's attribute", ->
       $('#link').attr('href').should.equal '/subpage'
+
+  describe '#style', ->
+    it "returns element's CSS style", ->
+      $('#styledAttribute').style('color').should.equal 'rgb(0, 128, 0)'
+      $('#styledAttribute').style('background-color').should.equal 'transparent'
+
+    it "returns element's CSS style from a stylesheet", ->
+      $('#styledStylesheet').style('color').should.equal 'rgb(128, 0, 128)'
   
   describe '#fill', ->
     it "fills an input/textarea with text", ->
