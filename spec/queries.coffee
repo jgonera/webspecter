@@ -4,16 +4,8 @@ feature 'Queries', (context, browser, $) ->
 #  afterEach -> browser.page.render "shots/#{i++} #{feature.currentTestFullTitle}.png"
   
   it "throws an error if no elements found and property is accessed", ->
-    error = false
-    try $('banana').text
-    catch e
-      error = true
-    finally error.should.equal true
-    error = false
-    try $('cup').fill 'tea'
-    catch e
-      error = true
-    finally error.should.equal true
+    (-> $('banana').text).should.throw Error
+    (-> $('cup').fill 'tea').should.throw Error
   
   it "finds elements using xpath", ->
     $(xpath: '//*[text()="first item"]').text.should.equal 'first item'
