@@ -110,7 +110,7 @@ feature 'Queries', (context, browser, $) ->
   describe '#style', ->
     it "returns element's CSS style", ->
       $('#styledAttribute').style('color').should.equal 'rgb(0, 128, 0)'
-      $('#styledAttribute').style('background-color').should.equal 'transparent'
+      $('#styledAttribute').style('background-color').should.match /(transparent|rgba\(0, 0, 0, 0\))/
 
     it "returns element's CSS style from a stylesheet", ->
       $('#styledStylesheet').style('color').should.equal 'rgb(128, 0, 128)'
