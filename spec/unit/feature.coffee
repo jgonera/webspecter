@@ -1,5 +1,5 @@
 {EventEmitter} = require('events')
-{Feature, FeatureManager} = require('../../feature')
+{Feature, FeatureManager} = require('../../lib/feature')
 
 class DummySuite extends EventEmitter
   constructor: ->

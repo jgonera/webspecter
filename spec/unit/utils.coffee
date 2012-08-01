@@ -1,4 +1,4 @@
-utils = require '../../utils'
+utils = require '../../lib/utils'
 
 describe 'utils', ->
   describe '#injectArgs', ->

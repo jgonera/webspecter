@@ -1,4 +1,4 @@
-wait = require '../../keywords/wait'
+wait = require '../../lib/keywords/wait'
 
 interceptException = (callback) ->
   oldListeners = process.listeners 'uncaughtException'

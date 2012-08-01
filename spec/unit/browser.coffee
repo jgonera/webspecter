@@ -1,6 +1,6 @@
-Browser = require '../../Browser'
-PageQuery = require '../../PageQuery'
-{config} = require '../../environment'
+Browser = require '../../lib/Browser'
+PageQuery = require '../../lib/PageQuery'
+{config} = require '../../lib/environment'
 config.baseUrl = 'http://localhost:4567'
 
 
