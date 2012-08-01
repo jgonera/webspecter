@@ -20,6 +20,9 @@ feature 'Queries', (context, browser, $) ->
     $(field: 'info text:').value.should.equal 'initial value'
     $(field: 'info text').value.should.equal 'initial value'
     $(field: 'test input').value.should.equal 'test value'
+
+  it "finds fields by their placeholder", ->
+    $(field: 'placeholder input').attr('name').should.equal 'placeholderInput'
   
   it "finds buttons by their caption", ->
     $(button: 'set info').attr('id').should.equal 'setInfo'
@@ -140,6 +143,14 @@ feature 'Queries', (context, browser, $) ->
     it "selects an option", ->
       $(field: 'select').select('Two')
       $(field: 'select').value.should.equal '2'
+
+  describe "#submit", ->
+    afterEach (done) -> $(link: 'home').click done
+
+    it "submits a form", (done) ->
+      $('form').submit ->
+        $('h1').text.should.equal 'post'
+        done()
 
   describe "when there are more elements", ->
     it "lets us access them with an index", ->
