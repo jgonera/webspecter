@@ -1,4 +1,4 @@
-feature "Collaborative editing", (context, browser, $) ->
+feature "Collaborative editing", (context) ->
   alice = context.newContext()
   bob = context.newContext()
 
