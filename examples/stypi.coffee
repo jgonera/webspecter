@@ -1,4 +1,4 @@
-feature "Collaborative editing", (context) ->
+feature "Stypi collaborative editing", (context) ->
   alice = context.newContext()
   bob = context.newContext()
 
