@@ -72,7 +72,8 @@ documentation for details.
 Each feature has its own `context`, `browser` and a jQuery-like function
 `$`. jQuery is *not* used internally, so don't expect 100% compatibility.
 
-See details below on how to use them.
+See details below on how to use them or [WebSpecter examples][] for more
+real life use cases.
 
 
 ### Browser object
@@ -153,7 +154,7 @@ Value of element's `name` attribute.
 Value of element's `name` CSS property.
 
 ```coffeescript
-$('header').style('color')
+$('header').style('color') # returns color of the <header> element
 ```
 
 ##### `fill(value)`
@@ -172,7 +173,12 @@ Unchecks a checkbox.
 Selects an option in `<select>` by its name.
 
 ##### `submit([callback])`
-Submits a `<form>` and calls optional callback.
+Submits a `<form>` and calls optional callback. Example:
+
+```coffeescript
+$('form').submit ->
+  $('p#flash').text.should.include "successfully submitted"
+```
 
 ##### `click([callback])`
 Clicks the element. If an argument is given it's treated as a callback that
@@ -197,7 +203,111 @@ $('#somelist li').each (element) ->
 ```
 
 
+### Context object
+
+The `context` object contains the whole environment for a particular
+feature. In fact, it also contains the `browser` object and `$` function. It
+also contains all the helper functions defined in the
+[environment file](#environment-file).
+
+The `context` object contains the default context for the feature, but you
+can create multiple context using `context.newContext()`. This can be used
+to simulate multiple users interacting with your web application at the same
+time.
+
+For a complete example of such use case see `examples/stypi.coffee`.
+
+
+#### Properties and methods
+
+##### `browser`
+Returns the browser object for the context
+
+##### `$(selector)`
+The `$` function.
+
+##### `newContext()`
+Returns a new context.
+
+##### `include(path)`
+Includes additional helper functions in the context from a file defined by
+`path`. See [Defining helpers](#defining-helpers) for details.
+
+
+#### Defining helpers
+
+Every context can include helper functions. Helper functions defined in the
+[environment file](#environment-file) are available in new contexts by
+default. However, you can also include helpers from other files.
+
+When defining helpers `this` is set to the context so that you can use
+context's browser and `$` function inside them (`@browser` and `@$` in
+CoffeeScript, `this.browser` and `this.$` in JavaScript).
+
+Example:
+
+```coffeescript
+# my_helpers.coffee
+exports.helpers =
+  sendMessage: (text) ->
+    @$(field: "Message").fill text
+    @$(button: "Send").click()
+
+# my_feature.coffee
+feature "Messages", (context, browser, $) ->
+  context.include 'my_helpers.coffee'
+
+  it "displays sent messages", ->
+    context.sendMessage "test message"
+    $('#messages').text.should.include "test message"
+```
+
+
+### Environment file
+
+There is one special file which you can put in the tests directory, called
+`env.coffee` or `env.js`. This file can contain global configuration for all
+the features, additional selectors for the `$` function and default helper
+functions for contexts. Example:
+
+```coffeescript
+exports.config =
+  baseUrl: 'http://localhost:3001'
+  
+exports.selectors =
+  tea: (query) -> xpath: "//*[text()='#{query} tea']"
+
+exports.helpers =
+  pageTitle: -> @$('h2').text
+```
+
+#### `config`
+
+Contains global configuration for all the features.
+
+##### `baseUrl`
+A string that will be prepended in all `browser.visit()` calls so that
+instead of repeating the host and port in all the features, you can simply
+write `browser.visit('/path')` and it will visit `baseUrl + '/path'`.
+
+
+#### `selectors`
+
+Additional selector for the `$` function. The example above adds the
+following:
+
+```coffeescript
+$(tea: 'black') # will select all elements whose text is "black tea"
+```
+
+
+#### `helpers`
+
+Default helpers defined in a way described in [Defining helpers](#defining-helpers).
+
+
 [Chai]: http://chaijs.com/
 [CoffeeScript]: http://coffeescript.org/
 [Mocha]: http://visionmedia.github.com/mocha/
 [PhantomJS]: http://phantomjs.org/
+[WebSpecter examples]: https://github.com/jgonera/webspecter/tree/master/examples
