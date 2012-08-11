@@ -43,8 +43,8 @@ $ webspecter --version
 ```
 
 
-Basic usage
------------
+Usage
+-----
 
 Tests can be written in JavaScript or [CoffeeScript][]. The examples in the
 docs use the latter.
@@ -75,7 +75,7 @@ Each feature has its own `context`, `browser` and a jQuery-like function
 See details below on how to use them.
 
 
-### Browser
+### Browser object
 
 Browser is used to navigate web sites in tests. It's a wrapper for
 PhantomJS's WebPage.
@@ -83,25 +83,25 @@ PhantomJS's WebPage.
 
 #### Properties and methods
 
-##### `#visit`
-Visits a URL.
+##### `url`
+Contains current URL.
+
+##### `visit(url, [callback])`
+Visits a URL. If callback is provided it is called after the page is loaded.
 
 ```coffeescript
 beforeEach (done) -> browser.visit 'http://google.com/', done
 ```
 
-##### `#evaluate`
+##### `evaluate(fn)`
 Evaluates code in web site's context.
 
 ```coffeescript
 windowWidth = browser.evaluate -> window.innerWidth
 ```
 
-##### `.url`
-Contains current URL.
 
-
-### $
+### $ function
 
 Finds elements on the web site. If the argument is a string it treats it as
 a CSS selector. If the arguments is an object, it can have one of the
@@ -127,56 +127,56 @@ id or placeholder.
 `$` returns an object with the following properties and methods that can let
 you inspect and manipulate web site's elements.
 
-##### `.present`
+##### `present`
 True if the element is present.
 
 ```coffeescript
 $('h1').present.should.be.true
 ```
 
-##### `.visible`
+##### `visible`
 True if the element is visible.
 
-##### `.text`
+##### `text`
 Element's text contents.
 
-##### `.value`
+##### `value`
 Input's or textarea's value.
 
-##### `.checked`
+##### `checked`
 True for checked radioboxes and checkboxes.
 
-##### `#attr(name)`
+##### `attr(name)`
 Value of element's `name` attribute.
 
-##### `#style(name)`
+##### `style(name)`
 Value of element's `name` CSS property.
 
 ```coffeescript
 $('header').style('color')
 ```
 
-##### `#fill(value)`
+##### `fill(value)`
 Fills an input or textarea with `value`.
 
-##### `#type(text)`
+##### `type(text)`
 Types `text` into an input or textarea by sending a JavaScript `TextEvent`.
 
-##### `#check`
+##### `check()`
 Checks a checkbox or radiobox.
 
-##### `#uncheck`
+##### `uncheck()`
 Unchecks a checkbox.
 
-##### `#select(option)`
+##### `select(option)`
 Selects an option in `<select>` by its name.
 
-##### `#submit`
-Submits a `<form>`.
+##### `submit([callback])`
+Submits a `<form>` and calls optional callback.
 
-##### `#click`
+##### `click([callback])`
 Clicks the element. If an argument is given it's treated as a callback that
-will be run after the page is loaded (e.g.  after submitting the form).
+will be run after the page is loaded (e.g. after submitting the form).
 
 
 #### Multiple elements
@@ -186,7 +186,7 @@ methods apply to the first element from the list. You can access consecutive
 elements with an array-like syntax:
 
 ```coffeescript
-$('#somelist li')[2] # selected the third <li>
+$('#somelist li')[2].text # access the third <li>'s text
 ```
 
 You can also iterate over all elements:
