@@ -75,24 +75,33 @@ Each feature has its own `context`, `browser` and a jQuery-like function
 See details below on how to use them.
 
 
-### `browser`
+### Browser
 
-`#visit`, visits a URL
+Browser is used to navigate web sites in tests. It's a wrapper for
+PhantomJS's WebPage.
+
+
+#### Properties and methods
+
+##### `#visit`
+Visits a URL.
 
 ```coffeescript
 beforeEach (done) -> browser.visit 'http://google.com/', done
 ```
 
-`#evaluate`, evaluates code in web site's context
+##### `#evaluate`
+Evaluates code in web site's context.
 
 ```coffeescript
 windowWidth = browser.evaluate -> window.innerWidth
 ```
 
-`.url`, contains current URL
+##### `.url`
+Contains current URL.
 
 
-### `$`
+### $
 
 Finds elements on the web site. If the argument is a string it treats it as
 a CSS selector. If the arguments is an object, it can have one of the
@@ -112,55 +121,76 @@ id or placeholder.
 `//li[text()="special"]` finds all `<li>` elements that contain the text
 "special".
 
-`$` returns an object with the following properties and methods:
 
-`.present`, true if the element is present.
+#### Properties and methods of returned objects
+
+`$` returns an object with the following properties and methods that can let
+you inspect and manipulate web site's elements.
+
+##### `.present`
+True if the element is present.
 
 ```coffeescript
 $('h1').present.should.be.true
 ```
 
-`.visible`, true if the element is visible.
+##### `.visible`
+True if the element is visible.
 
-`.text`, element's text contents.
+##### `.text`
+Element's text contents.
 
-`.value`, input's or textarea's value.
+##### `.value`
+Input's or textarea's value.
 
-`.checked`, true for checked radioboxes and checkboxes.
+##### `.checked`
+True for checked radioboxes and checkboxes.
 
-`#attr(name)`, value of element's `name` attribute.
+##### `#attr(name)`
+Value of element's `name` attribute.
 
-`#style(name)`, value of element's `name` CSS property.
+##### `#style(name)`
+Value of element's `name` CSS property.
+
 ```coffeescript
 $('header').style('color')
 ```
 
-`#fill(value)`, fills an input or textarea with `value`.
+##### `#fill(value)`
+Fills an input or textarea with `value`.
 
-`#type(text)`, types `text` into an input or textarea by sending a
-JavaScript `TextEvent`.
+##### `#type(text)`
+Types `text` into an input or textarea by sending a JavaScript `TextEvent`.
 
-`#check`, checks a checkbox or radiobox.
+##### `#check`
+Checks a checkbox or radiobox.
 
-`#uncheck`, unchecks a checkbox.
+##### `#uncheck`
+Unchecks a checkbox.
 
-`#select(option)`, selects an option in `<select>` by its name.
+##### `#select(option)`
+Selects an option in `<select>` by its name.
 
-`#submit`, submits a `<form>`.
+##### `#submit`
+Submits a `<form>`.
 
-`#click`, clicks the element. If an argument is given it's treated as a
-callback that will be run after the page is loaded (e.g.  after submitting
-the form).
+##### `#click`
+Clicks the element. If an argument is given it's treated as a callback that
+will be run after the page is loaded (e.g.  after submitting the form).
+
+
+#### Multiple elements
 
 When more than one element is returned by a query, by default all the
 methods apply to the first element from the list. You can access consecutive
 elements with an array-like syntax:
 
 ```coffeescript
-$('#somelist li`)[2] # selected the third <li>
+$('#somelist li')[2] # selected the third <li>
 ```
 
 You can also iterate over all elements:
+
 ```coffeescript
 $('#somelist li').each (element) ->
   element.text.should.include 'item'
