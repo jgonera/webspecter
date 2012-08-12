@@ -46,6 +46,8 @@ $ webspecter --version
 Usage
 -----
 
+**Important:** WebSpecter is in early development stage. API may still change.
+
 Tests can be written in JavaScript or [CoffeeScript][]. The examples in the
 docs use the latter.
 
@@ -285,7 +287,7 @@ exports.helpers =
 
 Contains global configuration for all the features.
 
-##### `baseUrl`
+##### `config.baseUrl`
 A string that will be prepended in all `browser.visit()` calls so that
 instead of repeating the host and port in all the features, you can simply
 write `browser.visit('/path')` and it will visit `baseUrl + '/path'`.
