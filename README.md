@@ -308,8 +308,24 @@ $(tea: 'black') # will select all elements whose text is "black tea"
 Default helpers defined in a way described in [Defining helpers](#defining-helpers).
 
 
+Development
+-----------
+
+If you want to add something to WebSpecter, remember to write tests for it.
+Tests are also written using Mocha. You can run the whole WebSpecter test suite
+with the following command:
+
+```bash
+make test
+```
+
+This automatically starts the test web application before running tests. The
+test web app can be found in `support/server` and requires [Node.js][].
+
+
 [Chai]: http://chaijs.com/
 [CoffeeScript]: http://coffeescript.org/
 [Mocha]: http://visionmedia.github.com/mocha/
+[Node.js]: http://nodejs.org/
 [PhantomJS]: http://phantomjs.org/
 [WebSpecter examples]: https://github.com/jgonera/webspecter/tree/master/examples
