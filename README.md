@@ -74,8 +74,11 @@ documentation for details.
 Each feature has its own `context`, `browser` and a jQuery-like function
 `$`. jQuery is *not* used internally, so don't expect 100% compatibility.
 
-See details below on how to use them or [WebSpecter examples][] for more
-real life use cases.
+Apart from `feature`, WebSpecter adds two other global keywords to the DSL:
+`wait` and `parallelize`.
+
+See details below on how to use all the features or [WebSpecter examples][]
+for more real life use cases.
 
 
 ### Browser object
@@ -186,6 +189,12 @@ $('form').submit ->
 Clicks the element. If an argument is given it's treated as a callback that
 will be run after the page is loaded (e.g. after submitting the form).
 
+##### `is`
+
+`is` contains the following functions: `is.present()`, `is.visible()`,
+`is.checked()`. They return the same values as the properties mentioned before.
+They can be used as a condition function in the [`wait` functions](#wait).
+
 
 #### Multiple elements
 
@@ -213,7 +222,7 @@ also contains all the helper functions defined in the
 [environment file](#environment-file).
 
 The `context` object contains the default context for the feature, but you
-can create multiple context using `context.newContext()`. This can be used
+can create multiple contexts using `context.newContext()`. This can be used
 to simulate multiple users interacting with your web application at the same
 time.
 
@@ -306,6 +315,43 @@ $(tea: 'black') # will select all elements whose text is "black tea"
 #### `helpers`
 
 Default helpers defined in a way described in [Defining helpers](#defining-helpers).
+
+
+### Additional global keywords
+
+#### `wait`
+
+Very often when you test web applications you might want to wait until
+something happens (e.g. a DOM element appears) before continuing the test. You
+can do it using the `wait.while()` and `wait.until()` functions.
+
+Both functions receive two functions as their arguments: a condition function
+and a callback. For `wait.until()` the condition function is checked constantly
+until it returns `true` and then the callback is called. For `wait.while()` the
+callback is called when the condition function returns `false`.
+
+Optionally, the second argument can be an object with the following options:
+`for` which sets the timeout in ms and `message` which sets a custom error
+message if the timeout is reached. The error message can be also set by
+creating a `message` attribute in the condition function.
+
+Examples:
+
+```coffeescript
+$('#addWithDelay').click()
+wait.until $('#delayed').is.present, ->
+  $('#delayed').text.should.equal 'something'
+  done()
+```
+
+```coffeescript
+appReady = ->
+  browser.evaluate -> window.appReady
+appReady.message = "Timed out waiting for the app to be ready"
+
+wait.until appReady, for: 1000, ->
+  $('#workspace').present.should.be.true
+```
 
 
 Development
