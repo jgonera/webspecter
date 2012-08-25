@@ -237,8 +237,8 @@ Returns the browser object for the context
 ##### `$(selector)`
 The `$` function.
 
-##### `newContext()`
-Returns a new context.
+##### `newContext([name])`
+Returns a new context with optional `name`.
 
 ##### `include(path)`
 Includes additional helper functions in the context from a file defined by
@@ -351,6 +351,31 @@ appReady.message = "Timed out waiting for the app to be ready"
 
 wait.until appReady, for: 1000, ->
   $('#workspace').present.should.be.true
+  done()
+```
+
+
+#### `parallelize`
+
+In certain situations you may want several asynchronous tasks to be performed
+in parallel (e.g. registering two users accounts at the same time). You can
+achieve this by using `parallelize`. It accepts a single argument which is the
+number of tasks to be performed simultaneously and returns a function which can
+be used instead of `done`.
+
+Example:
+
+```coffeescript
+alice = context.newContext()
+bob = context.newContext()
+parallel = parallelize 2
+
+# register two users in parallel (createUser is a helper)
+alice.createUser aliceUser, parallel
+bob.createUser bobUser, parallel
+parallel.done =>
+  # do something more
+  done()
 ```
 
 
