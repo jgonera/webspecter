@@ -1,15 +1,15 @@
 [submodule "node_modules/mocha"]
 	path = node_modules/mocha
-	url = git://github.com/visionmedia/mocha.git
+	url = https://github.com/visionmedia/mocha.git
 [submodule "node_modules/commander"]
 	path = node_modules/commander
-	url = git://github.com/visionmedia/commander.js.git
+	url = https://github.com/visionmedia/commander.js.git
 [submodule "nodify"]
 	path = nodify
-	url = git@github.com:jgonera/phantomjs-nodify.git
+	url = https://github.com/jgonera/phantomjs-nodify.git
 [submodule "node_modules/debug"]
 	path = node_modules/debug
-	url = git://github.com/visionmedia/debug.git
+	url = https://github.com/visionmedia/debug.git
 [submodule "node_modules/diff"]
 	path = node_modules/diff
 	url = https://github.com/kpdecker/jsdiff.git
