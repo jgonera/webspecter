@@ -232,7 +232,7 @@ For a complete example of such use case see `examples/stypi.coffee`.
 #### Properties and methods
 
 ##### `browser`
-Returns the browser object for the context
+Returns the browser object for the context.
 
 ##### `$(selector)`
 The `$` function.
