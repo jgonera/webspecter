@@ -4,5 +4,18 @@ SOURCE="$0"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-/usr/bin/env phantomjs --disk-cache=yes --max-disk-cache-size=1024 $DIR/../lib/webspecter.js "$@"
+SSL=''
+while getopts ":x" opt; do
+  case $opt in
+    x)
+      SSL='--ignore-ssl-errors=yes'
+      shift
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+  esac
+done
+/usr/bin/env phantomjs $SSL --disk-cache=yes --max-disk-cache-size=1024 $DIR/../lib/webspecter.js "$@"
+
 
