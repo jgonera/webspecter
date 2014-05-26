@@ -4,5 +4,14 @@ SOURCE="$0"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-/usr/bin/env phantomjs --disk-cache=yes --max-disk-cache-size=1024 $DIR/../lib/webspecter.js "$@"
+PHANTOM_OPTIONS="--disk-cache=yes --max-disk-cache-size=1024"
+
+for arg; do
+  case "$arg" in
+  -P,*) PHANTOM_OPTIONS="$PHANTOM_OPTIONS ${arg#-P,}"; shift ;;
+  *) break ;;
+  esac
+done
+
+/usr/bin/env phantomjs $PHANTOM_OPTIONS $DIR/../lib/webspecter.js "$@"
 
