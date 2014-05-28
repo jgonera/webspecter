@@ -2,7 +2,7 @@
   "name": "webspecter-test",
   "version": "0.0.1",
   "dependencies": {
-    "express": ">=2.5.1",
+    "express": "~2.5",
     "ejs": ">=0.5.0"
   }
 }
