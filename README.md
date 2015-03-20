@@ -1,6 +1,9 @@
 WebSpecter
 ==========
 
+**DISCLAIMER:** I don't have time to maintain this project anymore. If you
+wish to take it over, let me know.
+
 WebSpecter is a an acceptance test framework for web applications. It
 simulates how a real user would interact with a web browser using BDD-style
 tests written in CoffeeScript or JavaScript. A simple test example:
