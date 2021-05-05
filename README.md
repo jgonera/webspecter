@@ -399,7 +399,7 @@ test web app can be found in `support/server` and requires [Node.js][].
 
 [Chai]: http://chaijs.com/
 [CoffeeScript]: http://coffeescript.org/
-[Mocha]: http://visionmedia.github.com/mocha/
+[Mocha]: https://mochajs.org/
 [Node.js]: http://nodejs.org/
 [PhantomJS]: http://phantomjs.org/
 [WebSpecter examples]: https://github.com/jgonera/webspecter/tree/master/examples
